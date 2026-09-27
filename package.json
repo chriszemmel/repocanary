@@ -1,6 +1,6 @@
 {
   "name": "repocanary",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Checks a GitHub repository for the known signatures of fake-job-interview malware, without ever running its code.",
   "keywords": [
     "security",

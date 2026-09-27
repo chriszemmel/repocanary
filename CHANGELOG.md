@@ -8,6 +8,24 @@ it.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-27
+
+### Fixed
+
+- The AI second opinion is told the true number of findings, not the length
+  of the capped list shown in reports.
+
+### Changed
+
+- The README, `--help` and SECURITY.md say the scanned repository's code is
+  never run or saved, rather than never downloaded: the scanner reads files
+  into memory to check them.
+- The README and SECURITY.md list everything `--ai` sends: the findings, a
+  redacted install-script excerpt of up to 600 bytes, the repository address
+  and its public metadata.
+- BENCHMARK.md: the frozen-rules rate fell from 9%, and the 1,198
+  repositories are waves 24 to 29.
+
 ## [1.0.0] - 2026-09-24
 
 First public release. A scanner for the person a stranger's repository was
@@ -52,5 +70,6 @@ evaluates or imports the repository to find out.
 
 Details in BENCHMARK.md.
 
-[Unreleased]: https://github.com/chriszemmel/repocanary/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/chriszemmel/repocanary/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/chriszemmel/repocanary/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/chriszemmel/repocanary/releases/tag/v1.0.0
