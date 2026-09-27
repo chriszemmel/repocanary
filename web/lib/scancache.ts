@@ -51,9 +51,25 @@ export function createScanCache<T>(
     },
     run(key, scan) {
       if (entries.size >= max) {
-        // Oldest first; Map keeps insertion order.
-        const oldest = entries.keys().next().value;
-        if (oldest !== undefined) entries.delete(oldest);
+        // Expired results first: they are dead weight that only a repeat
+        // request for the same repository would otherwise clear. The walk is
+        // bounded by `max` and happens only on a miss at capacity.
+        const at = now();
+        for (const [k, e] of entries) {
+          if (e.at !== null && at - e.at >= ttl) entries.delete(k);
+        }
+      }
+      if (entries.size >= max) {
+        // Then the oldest landed result, so a scan still running is not
+        // dropped and started twice. Map keeps insertion order.
+        let victim: string | undefined;
+        for (const [k, e] of entries) {
+          if (e.at !== null) {
+            victim = k;
+            break;
+          }
+        }
+        entries.delete(victim ?? entries.keys().next().value!);
       }
       const entry: { promise: Promise<T>; at: number | null } = { promise: scan(), at: null };
       entries.delete(key);
@@ -72,4 +88,22 @@ export function createScanCache<T>(
       return entries.size;
     },
   };
+}
+
+/**
+ * The scan route's one decision: answer from the cache, or take a unit of
+ * the scan budget and start a scan. Returns null when the budget is spent.
+ * Kept here, not in the route, so a test can hold the budget to exactly one
+ * unit per scan that actually runs and none for a cached answer.
+ */
+export function scanOrReuse<T>(
+  cache: ScanCache<T>,
+  key: string,
+  takeBudget: () => boolean,
+  scan: () => Promise<T>,
+): Promise<T> | null {
+  const cached = cache.get(key);
+  if (cached) return cached;
+  if (!takeBudget()) return null;
+  return cache.run(key, scan);
 }

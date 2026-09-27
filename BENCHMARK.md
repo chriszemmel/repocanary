@@ -10,7 +10,7 @@ the end. Last measured on 2026-09-24.
 | ------------------------------------------------------- | ------------------------------------------ |
 | Repositories scanned the rules had never seen           | 4,002                                      |
 | Public repositories in the regression corpus            | 3,408                                      |
-| Wrong reds on unseen repositories, rules frozen         | 2.75% (33 of the last 1,198), down from 13% |
+| Wrong reds on unseen repositories, rules frozen         | 2.75% (33 of the last 1,198), down from 9%  |
 | Corpus verdicts on the last full run                    | 77% green, 21% yellow, 2% red              |
 | Live traps found in the wild while measuring            | 19                                         |
 | Documented attack techniques caught                     | 101 of 101                                 |
@@ -61,8 +61,8 @@ of these waves came in at 9%.
 | 28    | Python, TypeScript, PHP, Java, Vue, newest first             | 400          | 11         | 2.75    |
 | 29    | The wave 16 pools, drawn a third time                        | 398          | 11         | 2.8     |
 
-On the harder pool the rate fell by two thirds and then held for three
-waves in a row, at about one wrong red in 36 honest repositories. That is the honest limit of a
+On the harder pool the rate fell by two thirds and then held across the
+last three draws (waves 24 to 29), at about one wrong red in 36 honest repositories. That is the honest limit of a
 scanner that reads files and runs nothing. Each wrong red was fixed with a
 general principle rather than an exception, next to a test that keeps the
 trap shape it must still catch:

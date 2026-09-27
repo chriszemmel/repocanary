@@ -256,7 +256,8 @@ function buildUserMessage(result) {
     filesScanned: result.stats.filesScanned,
     // Say how many there were: a model shown twenty cannot know it was not
     // shown the twenty-first, and parseReply refuses a clear in that case.
-    totalFindings: result.findings.length,
+    // The true count, not the listed one: `findings` is capped for reports.
+    totalFindings: result.stats?.findings ?? Math.max(result.allFindings?.length ?? 0, result.findings.length),
     findings: result.findings.slice(0, AI_FINDINGS_SHOWN).map((f) => ({
       id: f.id,
       severity: f.severity,

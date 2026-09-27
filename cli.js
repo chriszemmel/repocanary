@@ -19,7 +19,7 @@ import { EXIT_CODES } from "./src/verdict.js";
 import { wrapText } from "./src/textutil.js";
 
 const HELP = `repocanary: check a GitHub repo for known malware-trap signatures
-without downloading or running any of its code.
+without ever running its code.
 
 Usage:
   repocanary <owner/repo | github.com URL> [options]

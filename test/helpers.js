@@ -7,7 +7,7 @@
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { scanRepo } from "../src/scan.js";
@@ -76,7 +76,8 @@ function walkFiles(dir, base = dir) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) Object.assign(out, walkFiles(full, base));
-    else out[relative(base, full)] = readFileSync(full, "utf8");
+    // Repository paths use "/" whatever the host OS, as GitHub's tree does.
+    else out[relative(base, full).split(sep).join("/")] = readFileSync(full, "utf8");
   }
   return out;
 }

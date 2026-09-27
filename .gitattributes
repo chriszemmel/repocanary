@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Golden reports are compared byte for byte, so they keep LF on every OS.
+test/golden/** eol=lf

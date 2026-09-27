@@ -3,7 +3,8 @@
 ## Reporting a vulnerability in RepoCanary
 
 If you find a way to make RepoCanary execute repository content, leak the
-scanned URL anywhere other than GitHub, stall or crash on crafted input, or
+scanned URL anywhere other than GitHub (or, with `--ai`, the AI provider you
+chose), stall or crash on crafted input, or
 otherwise behave unsafely, please report it privately first: use **Report a
 vulnerability** under this repository's Security tab. Include what you did,
 what happened, what you expected, and why it matters. Please allow a

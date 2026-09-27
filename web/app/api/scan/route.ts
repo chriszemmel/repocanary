@@ -19,7 +19,7 @@ import { PROVIDERS, configuredProviders, runAiPass, type AiIssue } from "@engine
 import { resolveAi } from "@/lib/aikey";
 import { DISCLAIMER, headline, whatItDoes, whatToDo } from "@/lib/present";
 import { checkRateLimit, clientKey, takeScanBudget } from "@/lib/ratelimit";
-import { createScanCache, scanKey } from "@/lib/scancache";
+import { createScanCache, scanKey, scanOrReuse } from "@/lib/scancache";
 import type { ScanError, ScanResult } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -139,37 +139,29 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // One scan spends up to 175 requests of this site's GitHub quota, so a
-  // burst spread across many addresses could empty the hourly allowance and
-  // take every scan and every badge down with it. Taken only here, after the
-  // request is known to be a scan: malformed bodies cost GitHub nothing and
-  // must not be able to spend the budget either.
-  if (!takeScanBudget()) {
-    return errorResponse(
-      "github_rate_limited",
-      "This site is at its scan budget for the moment. Try again in a few minutes, or run the same check locally with: npx repocanary owner/repo",
-      429,
-    );
-  }
-
   try {
     // A repository scanned in the last few minutes, or being scanned right
     // now, is answered from that scan and spends no quota. See scancache.ts.
-    const key = scanKey(parsed.owner, parsed.repo);
-    let pending = scanCache.get(key);
+    //
+    // One scan spends up to 175 requests of this site's GitHub quota, so a
+    // burst spread across many addresses could empty the hourly allowance and
+    // take every scan and every badge down with it. The budget is taken only
+    // for a scan that will actually run: after the request is known to be a
+    // scan, so malformed bodies spend nothing, and never for a cached answer,
+    // which costs GitHub nothing either.
+    const pending = scanOrReuse(scanCache, scanKey(parsed.owner, parsed.repo), takeScanBudget, () =>
+      scanRepo({
+        owner: parsed.owner,
+        repo: parsed.repo,
+        client: createGitHubClient({ token: process.env.GITHUB_TOKEN }),
+      }),
+    );
     if (!pending) {
-      // One scan spends up to 175 requests of this site's GitHub quota, so a
-      // burst spread across many addresses could empty the hourly allowance
-      // and take every scan and every badge down with it.
-      if (!takeScanBudget()) {
-        return errorResponse(
-          "github_rate_limited",
-          "This site is at its scan budget for the moment. Try again in a few minutes, or run the same check locally with: npx repocanary owner/repo",
-          429,
-        );
-      }
-      const client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
-      pending = scanCache.run(key, () => scanRepo({ owner: parsed.owner, repo: parsed.repo, client }));
+      return errorResponse(
+        "github_rate_limited",
+        "This site is at its scan budget for the moment. Try again in a few minutes, or run the same check locally with: npx repocanary owner/repo",
+        429,
+      );
     }
     const scan = await pending;
 
