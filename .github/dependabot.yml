@@ -20,3 +20,9 @@ updates:
       web-build:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      # The types track the Node line the site is built on (.nvmrc and the
+      # web job use 22), not the newest. Newer majors would let code use APIs that
+      # Node 20 and 22 do not have, and tsc would not object.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
