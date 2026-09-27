@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "tool": {
     "name": "repocanary",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "repository": {
     "owner": "acme",
