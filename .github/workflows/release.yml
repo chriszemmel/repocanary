@@ -68,7 +68,25 @@ jobs:
       # Asserting the version rather than trusting the upgrade is the point:
       # an older npm does not fail over to OIDC, it asks for a token that is
       # no longer here, and the error it prints does not say why.
+      # A version already on npm cannot be published again, and trying makes
+      # the run fail red although nothing is wrong: the tag simply marks a
+      # version that went out another way, such as the first, manual release.
+      # Everything above still ran against the tagged commit; only the upload
+      # is skipped, and the run says so.
+      - name: Skip a version that is already on npm
+        id: registry
+        run: |
+          set -euo pipefail
+          spec="$(node -p "const p = require('./package.json'); p.name + '@' + p.version")"
+          if npm view "$spec" version > /dev/null 2>&1; then
+            echo "::notice::$spec is already on npm, so there is nothing to publish."
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Use an npm that can authenticate over OIDC
+        if: steps.registry.outputs.published != 'true'
         run: |
           set -euo pipefail
           npm install -g npm@11.20.0
@@ -104,4 +122,5 @@ jobs:
       # Until that exists the publish fails with an authentication error,
       # which is the safe direction: nothing ships unsigned or unattested.
       - name: Publish to npm over Trusted Publishing
+        if: steps.registry.outputs.published != 'true'
         run: npm publish --access public
