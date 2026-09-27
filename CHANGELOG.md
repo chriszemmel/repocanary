@@ -43,7 +43,7 @@ evaluates or imports the repository to find out.
 - 4,002 repositories the rules had never seen, in 29 waves. Wrong reds fell
   from 13% on the first wave to under 1% on take-home repositories, and on a
   deliberately harder pool scanned with frozen rules from 9% to 2.75% over
-  the last three waves (1,198 repositories). 19 live traps were found in the
+  waves 24 to 29 (1,198 repositories). 19 live traps were found in the
   wild along the way.
 - A regression corpus of 3,408 public repositories, re-scanned weekly: 77%
   green, 21% yellow, 2% red, every red listed with its reason.

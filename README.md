@@ -5,7 +5,7 @@
 <p align="center">
   <strong>Is that GitHub repo a trap?</strong><br>
   Check a repository for the known signatures of fake-job-interview malware,
-  in seconds, for free, without downloading or running any of its code.
+  in seconds, for free, without ever running its code.
 </p>
 
 <p align="center">
@@ -70,8 +70,8 @@ You do not need to understand the findings to act on the color.
   it does not prove the repository is safe, and the report says so.
 
 **Never used a terminal?** Open [repocanary.com](https://repocanary.com),
-paste the repository link, and read the same result there. Nothing is
-downloaded to your computer either way.
+paste the repository link, and read the same result there. Either way,
+nothing from the repository is run or saved on your computer.
 
 ## Screenshots
 
@@ -254,9 +254,9 @@ read access is effectively required:
 
 ### Optional AI second opinion
 
-`--ai` sends the findings (file paths, redacted snippets, reasons, and public
-repository metadata) to a language model with your own key. Nothing from your
-machine is sent. Providers, tried in this order: Gemini (`GEMINI_API_KEY`,
+`--ai` sends the findings (file paths, redacted snippets, reasons, up to 600
+redacted bytes of a flagged install script, and public repository metadata)
+to a language model with your own key. Nothing from your machine is sent. Providers, tried in this order: Gemini (`GEMINI_API_KEY`,
 free tier), Groq (`GROQ_API_KEY`, free tier), OpenAI (`OPENAI_API_KEY`) and
 Anthropic (`ANTHROPIC_API_KEY`); `--ai-provider` forces one, and
 `<PROVIDER>_MODEL` overrides the model. With no key set, RepoCanary offers to
@@ -324,7 +324,8 @@ RepoCanary says about it next to its CI status:
 
 It reads "no known traps", "flagged", "do not run", or "unavailable" when the
 scan could not run, which is never drawn as green. Verdicts are cached for a
-day.
+day; a cache in front of the site may keep showing the previous drawing for up
+to a week while it fetches a fresh one.
 
 ### Hosting the site yourself
 

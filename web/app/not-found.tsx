@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import LegalLinks from "@/components/LegalLinks";
 import { Wordmark } from "@/components/icons";
 
 // Next marks a not-found response noindex by itself.
@@ -23,6 +24,9 @@ export default function NotFound() {
       >
         Check a repository
       </Link>
+      <footer className="mt-12 text-xs text-slate-500">
+        <LegalLinks />
+      </footer>
     </main>
   );
 }

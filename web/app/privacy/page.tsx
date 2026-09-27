@@ -18,8 +18,9 @@ export default function Privacy() {
         <p>
           No account, no cookies, no analytics, no tracking and no database. A scan sends the repository
           link you enter to this site&rsquo;s server, which reads that repository&rsquo;s public files
-          from GitHub and returns the result to your browser. Nothing about you is stored, and nothing
-          about the scan is written to disk.
+          from GitHub and returns the result to your browser. Apart from the hosting logs and a
+          short-lived request counter described below, nothing about you is kept, and nothing about a
+          scan is written to disk.
         </p>
       </section>
 
@@ -73,8 +74,9 @@ export default function Privacy() {
         </p>
         <p>
           To stop a single client from overloading the service, the server counts requests per IP
-          address. This counter lives only in the server&rsquo;s memory, for at most ten minutes, and is
-          never written to disk or shared.
+          address. Requests older than ten minutes no longer count and are cleared out at the next routine
+          sweep; the counter lives only in the server&rsquo;s memory, disappears when the server instance
+          stops, and is never written to disk or shared.
         </p>
         <p>
           The legal basis is Art. 6 (1) (b) GDPR (providing the scan you asked for) and, for the request
@@ -86,7 +88,8 @@ export default function Privacy() {
         <h2>4. Optional AI second opinion</h2>
         <p>
           Only if you tick the AI box and enter your own API key, the scan&rsquo;s findings (file paths,
-          shortened and redacted code snippets, the reasons for each finding) and public repository
+          shortened and redacted code snippets, the reasons for each finding, and up to 600 redacted
+          bytes of an install script a finding points at), the repository&rsquo;s address and its public
           metadata are sent, together with your key, to the provider you chose: Google (Gemini), Groq,
           OpenAI or Anthropic, all based in the USA. Nothing from your own computer is included.
         </p>
