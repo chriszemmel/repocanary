@@ -108,11 +108,11 @@ export default function ResultCard({ result }: { result: ScanResult }) {
                     {f.snippet}
                   </pre>
                 )}
-                <p className="mt-2 leading-relaxed text-slate-700 dark:text-slate-300">
+                <p className="mt-2 leading-relaxed [overflow-wrap:anywhere] text-slate-700 dark:text-slate-300">
                   {f.why}
                 </p>
                 {f.next && (
-                  <p className="mt-2 border-t border-slate-200 pt-2 leading-relaxed text-slate-600 dark:border-slate-700 dark:text-slate-400">
+                  <p className="mt-2 border-t border-slate-200 pt-2 leading-relaxed [overflow-wrap:anywhere] text-slate-600 dark:border-slate-700 dark:text-slate-400">
                     <span className="font-medium text-slate-500 dark:text-slate-400">
                       What to do:{" "}
                     </span>
@@ -145,7 +145,7 @@ export default function ResultCard({ result }: { result: ScanResult }) {
             {result.notes.map((note, i) => (
               <li
                 key={i}
-                className="text-sm leading-relaxed text-slate-600 dark:text-slate-400"
+                className="text-sm leading-relaxed [overflow-wrap:anywhere] text-slate-600 dark:text-slate-400"
               >
                 {note}
               </li>
@@ -201,7 +201,7 @@ function linkify(text: string): React.ReactNode[] {
         href={part}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 underline underline-offset-2 hover:text-blue-500 dark:text-blue-400"
+        className="[overflow-wrap:anywhere] text-blue-600 underline underline-offset-2 hover:text-blue-500 dark:text-blue-400"
       >
         {part}
       </a>
