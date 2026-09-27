@@ -1,0 +1,7 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "single-line-blob",
+    "dynamic-code-execution"
+  ]
+}

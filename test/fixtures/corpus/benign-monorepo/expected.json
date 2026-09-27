@@ -1,0 +1,6 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "override-redirect"
+  ]
+}

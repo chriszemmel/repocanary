@@ -1,0 +1,10 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "new-account",
+    "lure-theme",
+    "single-repo-account",
+    "author-mismatch"
+  ],
+  "mustNotFire": []
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RepoCanary",
+          "informationUri": "https://github.com/chriszemmel/repocanary",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "shortDescription": {
+                "text": "lifecycle-script"
+              },
+              "fullDescription": {
+                "text": "This package runs a \"prepare\" script automatically when you type npm install, and also when the package is installed from a git source, before you review or run anything. That is common in legitimate projects (copying files, setting up tooling), but it is also the entry point malware uses."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            },
+            {
+              "id": "typosquat-dependency",
+              "shortDescription": {
+                "text": "typosquat-dependency"
+              },
+              "fullDescription": {
+                "text": "The dependency \"lodasg\" is one keystroke away from the popular package \"lodash\". Attackers publish lookalike names so that a hurried reader sees the name they expect. It could be an unrelated legitimate package, but the resemblance is exactly what typosquatting exploits."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            }
+          ]
+        }
+      },
+      "properties": {
+        "verdict": "yellow",
+        "repository": "acme/widget",
+        "ref": "main"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "typosquat-dependency",
+          "level": "warning",
+          "message": {
+            "text": "The dependency \"lodasg\" is one keystroke away from the popular package \"lodash\". Attackers publish lookalike names so that a hurried reader sees the name they expect. It could be an unrelated legitimate package, but the resemblance is exactly what typosquatting exploits. What to do: Look up \"lodasg\" on npmjs.com: check its weekly downloads and publish date before trusting it."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package.json"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "lifecycle-script",
+          "level": "note",
+          "message": {
+            "text": "This package runs a \"prepare\" script automatically when you type npm install, and also when the package is installed from a git source, before you review or run anything. That is common in legitimate projects (copying files, setting up tooling), but it is also the entry point malware uses. What to do: Read what the \"prepare\" script actually does (and any file it invokes) before installing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package.json"
+                },
+                "region": {
+                  "startLine": 5
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

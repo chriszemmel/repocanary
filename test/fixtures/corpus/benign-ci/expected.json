@@ -1,0 +1,8 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "workflow-remote-script",
+    "workflow-pwn-request",
+    "workflow-secret-exfiltration"
+  ]
+}

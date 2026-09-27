@@ -1,0 +1,9 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "lockfile-insecure-registry-url"
+  ],
+  "mustNotFire": [
+    "lockfile-off-registry"
+  ]
+}

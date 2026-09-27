@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability in RepoCanary
+    url: https://github.com/chriszemmel/repocanary/security/advisories/new
+    about: Report privately if you found a way to make RepoCanary execute repository content or leak data.
+  - name: I think I ran a malicious repository
+    url: https://github.com/chriszemmel/repocanary/blob/main/WHAT-TO-DO-NOW.md
+    about: Disconnect first, then follow the steps in order. Do not open an issue before you have.

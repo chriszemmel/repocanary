@@ -1,0 +1,1362 @@
+{
+  "stats": {
+    "techniques": 101,
+    "categories": 9,
+    "rules": 94,
+    "detectionPct": 100,
+    "benignRepos": 71,
+    "evasions": 6
+  },
+  "campaigns": [
+    "Contagious Interview",
+    "BeaverTail",
+    "InvisibleFerret",
+    "OtterCookie"
+  ],
+  "categories": [
+    {
+      "name": "Npm install-time",
+      "rows": [
+        {
+          "name": "a1-postinstall-curl-pipe",
+          "note": "BeaverTail postinstall pipes a download into a shell",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "sev": "high"
+            },
+            {
+              "id": "readme-install-first",
+              "sev": "low"
+            }
+          ]
+        },
+        {
+          "name": "a2-preinstall-node-eval",
+          "note": "preinstall runs base64-decoded code with node -e",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "a3-postinstall-local-dropper",
+          "note": "postinstall runs a local file that fetches and runs code",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "lifecycle-script",
+              "sev": "low"
+            }
+          ]
+        },
+        {
+          "name": "a5-postinstall-process-substitution",
+          "note": "postinstall hands a download to bash by process substitution, no pipe to match",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "sev": "high"
+            },
+            {
+              "id": "readme-install-first",
+              "sev": "low"
+            }
+          ]
+        },
+        {
+          "name": "a4-prepare-git-source",
+          "note": "prepare script (runs on git install) fetches and evals",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "a6-dangerous-npm-script",
+          "note": "a plain npm script the README asks you to run pipes a download into a shell",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "dangerous-npm-script",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "a7-native-build-at-install",
+          "note": "gypfile: true compiles and runs a native build during npm install",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "native-build-at-install",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "a8-odd-dependency-mix",
+          "note": "a frontend app that also pulls in server and raw network packages",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "odd-dependency-mix",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Other ecosystems",
+      "rows": [
+        {
+          "name": "b1-setup-py-dropper",
+          "note": "Python setup.py shells out at install time",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "setup-py-install-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b2-build-rs-network",
+          "note": "Rust build.rs reaches for the network at compile time",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "build-rs-network-exec",
+              "sev": "high"
+            },
+            {
+              "id": "download-and-execute",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b3-gradle-exec",
+          "note": "Gradle build runs an external command",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "gradle-build-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b4-maven-exec",
+          "note": "Maven exec plugin downloads and runs during build",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "maven-build-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b5-requirements-url",
+          "note": "requirements.txt installs from a URL, not PyPI",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "requirements-url-dependency",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b6-composer-install-script",
+          "note": "PHP composer post-install script downloads and runs code",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "composer-install-script",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b7-yarnrc-yarnpath-hijack",
+          "note": "Yarn Berry yarnPath points at a checked-in program, not the release bundle",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "yarnrc-yarnpath",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b9-jupyter-notebook-dropper",
+          "note": "a Jupyter notebook code cell downloads and executes a payload",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "medium"
+            },
+            {
+              "id": "python-download-execute",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b8-ruby-extconf-exec",
+          "note": "Ruby native-extension build (extconf.rb) shells out at gem install time",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "ruby-build-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b10-go-generate-download",
+          "note": "a go:generate directive that downloads and runs a script",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "go-generate-exec",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b11-gradle-insecure-repo",
+          "note": "Gradle pulls dependencies from a plain-http repository",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "gradle-insecure-repo",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b12-maven-insecure-repo",
+          "note": "Maven pulls dependencies from a plain-http repository",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "maven-insecure-repo",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b13-requirements-custom-index",
+          "note": "requirements.txt redirects pip to a private index",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "requirements-custom-index",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "b14-gradle-kts-exec",
+          "note": "a Kotlin DSL Gradle build hands a download to a shell; commandLine(\"x\") is the Kotlin spelling of commandLine 'x'",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "gradle-build-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "b15-yarnrc-classic-yarnpath",
+          "note": "Yarn 1's .yarnrc points yarn-path at a checked-in program, the same hijack as Berry's yarnPath",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "yarnrc-yarnpath",
+              "sev": "high"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dependency poisoning",
+      "rows": [
+        {
+          "name": "c1-lockfile-poisoned-tarball",
+          "note": "lockfile resolves a familiar name to an attacker tarball",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lockfile-off-registry",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "c2-npm-alias-mismatch",
+          "note": "npm alias protocol installs a different package under a trusted name",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "npm-alias-mismatch",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "c3-scope-confusion",
+          "note": "a scope one edit from @types",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "scope-confusion",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c4-known-malicious-dependency",
+          "note": "depends on a package confirmed malicious in these campaigns",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "known-malicious-package",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "c5-typosquat",
+          "note": "one-edit lookalike of a popular package, in a repository from a fresh account",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "new-account",
+              "sev": "medium"
+            },
+            {
+              "id": "typosquat-dependency",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c9-poisoned-lockfile-git",
+          "note": "manifest asks for a version range, the lockfile resolves it from a git repository",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lockfile-git-dependency",
+              "sev": "medium"
+            },
+            {
+              "id": "lockfile-manifest-mismatch",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "c6-manifest-git-dependency",
+          "note": "a dependency installed from a git source, not the registry",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "manifest-non-registry-dependency",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c7-lockfile-transitive-install-script",
+          "note": "a deep dependency declares an install script",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "transitive-install-script",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c8-npmrc-registry-hijack",
+          "note": "committed .npmrc points npm at an attacker registry",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "npmrc-registry-override",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "c10-npmrc-committed-token",
+          "note": "a committed .npmrc carries an auth token",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "npmrc-committed-token",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c11-override-redirect",
+          "note": "an npm override sends a trusted name to a tarball URL",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "override-redirect",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "c12-npmrc-private-registry",
+          "note": "a committed .npmrc pointing npm at an unknown https registry with nothing else beside it; a company mirror and a hijack look the same, so it is a caution to read",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "npmrc-registry-override",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Obfuscation and loaders",
+      "rows": [
+        {
+          "name": "d1-eval-decoded-blob",
+          "note": "obfuscated eval(atob()) hidden in a build config",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "dynamic-code-execution",
+              "sev": "low"
+            },
+            {
+              "id": "eval-decoded-blob",
+              "sev": "high"
+            },
+            {
+              "id": "hex-obfuscation",
+              "sev": "high"
+            },
+            {
+              "id": "payload-in-config",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d2-remote-code-execution",
+          "note": "new Function('require', fetchedCode) staged loader",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "dynamic-code-execution",
+              "sev": "low"
+            },
+            {
+              "id": "remote-code-execution",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d3-string-concat-api-hiding",
+          "note": "child_process assembled from string pieces to dodge scanners",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "string-concat-api-hiding",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d4-invisible-zero-width",
+          "note": "a zero-width character splits an identifier",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "invisible-characters",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d5-pua-steganography",
+          "note": "Unicode Private Use Area characters hide a payload as blank space",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "private-use-steganography",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d6-bidi-trojan-source",
+          "note": "bidirectional override characters make the source read differently than it runs",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "bidi-override",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d7-homoglyph-url",
+          "note": "a lookalike domain using a Cyrillic letter",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "homoglyph-url",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d8-base64-blob-decoded",
+          "note": "a large base64 blob beside the code that decodes it",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "base64-blob",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d12-whitespace-hidden-code",
+          "note": "a loader parked after hundreds of spaces on a line that looks like a comment",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "dynamic-code-execution",
+              "sev": "low"
+            },
+            {
+              "id": "readme-install-first",
+              "sev": "low"
+            },
+            {
+              "id": "whitespace-hidden-code",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "d9-encoded-blob-density",
+          "note": "a source file that is mostly hex data",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "encoded-blob-density",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "d10-obfuscator-toolmarks",
+          "note": "the self-rotating string table of an automated JavaScript obfuscator",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "hex-obfuscation",
+              "sev": "high"
+            },
+            {
+              "id": "obfuscator-io",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "d11-unicode-tag-smuggling",
+          "note": "text carried in Unicode tag characters, a block that renders as nothing at all",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "unicode-tag-smuggling",
+              "sev": "high"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Credential theft",
+      "rows": [
+        {
+          "name": "e1-browser-wallet-stealer",
+          "note": "reads browser credential stores and a wallet extension by id",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lure-theme",
+              "sev": "low"
+            },
+            {
+              "id": "wallet-extension-id",
+              "sev": "high"
+            },
+            {
+              "id": "wallet-file-access",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "e2-ssh-and-cloud-creds",
+          "note": "reads SSH keys and cloud credential files",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "wallet-file-access",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "e3-env-exfiltration",
+          "note": "reads the environment and posts it out",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "env-exfiltration",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "e4-stealer-file-globbing",
+          "note": "walks the filesystem hunting for wallet and seed files",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "stealer-file-globbing",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "e5-keylogger-dependency",
+          "note": "pulls in keylogging and screen-capture components",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "surveillance-dependency",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "e6-macos-password-phish",
+          "note": "osascript pops a fake system password dialog to phish the login password",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "macos-password-phish",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "e7-spyware-components",
+          "note": "a keylogger and a screen-capture module wired into an app",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "spyware-dependency",
+              "sev": "medium"
+            },
+            {
+              "id": "surveillance-dependency",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Command and control",
+      "rows": [
+        {
+          "name": "f1-c2-port-fingerprint",
+          "note": "bare IP on a Contagious Interview C2 port",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "c2-port-fingerprint",
+              "sev": "high"
+            },
+            {
+              "id": "dynamic-code-execution",
+              "sev": "low"
+            }
+          ]
+        },
+        {
+          "name": "f2-beavertail-c2-paths",
+          "note": "calls documented BeaverTail command-and-control paths",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "beavertail-c2-paths",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "f3-invisibleferret-backdoor",
+          "note": "InvisibleFerret remote-command handlers",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "backdoor-command-handlers",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "f4-dead-drop-resolver",
+          "note": "fetches its next server address from a Google Doc dead drop",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "dead-drop-resolver",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "f5-exfil-discord-webhook",
+          "note": "posts collected data to a Discord webhook",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "exfil-sink",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "f6-tunneling-ngrok",
+          "note": "opens a tunnel to reach the victim without a fixed server",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "tunneling-infra",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "f9-anonymous-upload-exfil",
+          "note": "uploads collected data to an anonymous file host",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "exfil-sink",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "f10-remote-desktop-rat",
+          "note": "silently installs a remote-desktop tool for unattended access",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "remote-desktop-rat",
+              "sev": "high"
+            },
+            {
+              "id": "ssh-backdoor",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "f7-powershell-encoded-command",
+          "note": "spawns PowerShell with a base64-encoded command to hide the payload",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "powershell-encoded-command",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "f8-windows-lolbin-certutil",
+          "note": "uses certutil, a trusted Windows binary, to download the payload",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "windows-lolbin-download",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "f11-throwaway-host-c2",
+          "note": "a disposable free-hosting endpoint on a campaign-style path",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "beavertail-c2-paths",
+              "sev": "high"
+            },
+            {
+              "id": "throwaway-host-c2",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auto-run on open",
+      "rows": [
+        {
+          "name": "g1-vscode-folderopen",
+          "note": "VS Code task runs a command the moment the folder opens",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "vscode-autorun-task",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g2-devcontainer-postcreate",
+          "note": "dev container hook downloads and runs code on open",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "devcontainer-dangerous-hook",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g2b-devcontainer-jsonc-comma",
+          "note": "the same dev container hook behind a comment and a trailing comma; devcontainer.json is JSONC, so the tooling runs it either way",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "devcontainer-dangerous-hook",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g2c-devcontainer-unreadable",
+          "note": "a dev container configuration that cannot be parsed at all, so what it starts is unknown",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "unparseable-autorun-config",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g3-makefile-curl",
+          "note": "Makefile target pipes a download into a shell",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "makefile-remote-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g4-workflow-pwn-request",
+          "note": "pull_request_target runs untrusted code with secrets",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "workflow-pwn-request",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g5-workflow-secret-exfil",
+          "note": "workflow curls repository secrets out",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "workflow-secret-exfiltration",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g6-dockerfile-remote-exec",
+          "note": "Dockerfile pipes a download into a shell during build",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "dockerfile-remote-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g11-dockerfile-download-then-run",
+          "note": "Dockerfile saves a script on one line and runs it on a later one",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "dockerfile-remote-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g12-makefile-command-substitution",
+          "note": "Makefile target evaluates a download as command text",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "makefile-remote-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g7-pnpm-install-hook",
+          "note": ".pnpmfile.cjs runs code during pnpm install",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "pnpm-install-hook",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g8-vscode-settings-tool-hijack",
+          "note": "VS Code settings point a linter at a checked-in binary run on folder open",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "vscode-tool-path-hijack",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g9-direnv-envrc",
+          "note": ".envrc runs on cd into the directory and downloads code",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "direnv-envrc",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g10-compose-remote-exec",
+          "note": "docker compose service pipes a download into a shell",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "compose-remote-exec",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g13-devcontainer-initialize-command",
+          "note": "a dev container initializeCommand runs on the host, outside the container",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "devcontainer-initialize-command",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g14-dockerfile-remote-add",
+          "note": "Dockerfile bakes a file straight from a URL into the image",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "dockerfile-remote-add",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g15-makefile-obfuscated-command",
+          "note": "a make target decodes base64 into a command",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "makefile-obfuscated-command",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g16-vscode-terminal-env",
+          "note": "workspace settings inject environment variables into every terminal",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "vscode-terminal-env",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g18-workflow-self-hosted-runner",
+          "note": "a workflow that targets a self-hosted runner the candidate is asked to register",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "workflow-self-hosted-runner",
+              "sev": "medium"
+            }
+          ]
+        },
+        {
+          "name": "g19-mcp-server-local-file",
+          "note": "a checked-in MCP server the AI editor starts when the folder is opened",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "high"
+            },
+            {
+              "id": "mcp-server-autostart",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g20-agent-hook-command",
+          "note": "an agent hook runs a downloaded script while the coding agent works",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-hook-autorun",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g21-code-workspace-tool-hijack",
+          "note": "a .code-workspace file carries the tool-path hijack outside .vscode/",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "vscode-tool-path-hijack",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g22-emacs-dir-locals-eval",
+          "note": "a dir-local eval form runs when a file in the directory is opened",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "emacs-dir-locals-eval",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g23-neovim-exrc-autorun",
+          "note": "a project-local Neovim config spawns a process when the folder is opened",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "download-and-execute",
+              "sev": "medium"
+            },
+            {
+              "id": "editor-rc-autorun",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g24-agent-instruction-hidden",
+          "note": "an instruction hidden in an HTML comment, aimed at the coding agent and invisible to the reader",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-instruction-file",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g25-agent-instruction-override",
+          "note": "an instruction file that displaces the agent's own instructions and tells it to hide what it does",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-instruction-file",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g26-agent-instruction-styled-hidden",
+          "note": "instructions painted out of sight, so the rendered file and the file the agent reads differ",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-instruction-file",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g27-agent-instruction-delimiter-spoof",
+          "note": "a forged system turn inside the file an agent reads as instructions",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-instruction-file",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g28-agent-render-exfiltration",
+          "note": "a markdown image whose address carries a secret, so rendering it is the exfiltration",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "agent-instruction-file",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "g29-vscode-task-bare-relative-program",
+          "note": "a folder-open task whose args name a checked-in program by a bare relative path, with the interpreter in command and the file in args",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "dynamic-code-execution",
+              "sev": "low"
+            },
+            {
+              "id": "vscode-autorun-task",
+              "sev": "high"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Manifest and persistence",
+      "rows": [
+        {
+          "name": "h1-bin-shadowing",
+          "note": "installs an executable that shadows the real npm command",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "bin-command-shadowing",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "h2-startup-persistence",
+          "note": "installs itself into a shell startup file to survive reboot",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "sev": "low"
+            },
+            {
+              "id": "startup-persistence",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "h3-sandbox-evasion",
+          "note": "checks for a VM before activating (OtterCookie behavior)",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "sandbox-evasion",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Context signals",
+      "rows": [
+        {
+          "name": "i1-fresh-account-crypto-lure",
+          "note": "brand-new account, crypto theme, install-first README",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "author-mismatch",
+              "sev": "low"
+            },
+            {
+              "id": "lure-theme",
+              "sev": "low"
+            },
+            {
+              "id": "readme-install-first",
+              "sev": "low"
+            },
+            {
+              "id": "single-repo-account",
+              "sev": "low"
+            }
+          ]
+        },
+        {
+          "name": "i2-clickfix-readme",
+          "note": "README tells the victim to paste a shell command to fix a fake error",
+          "verdict": "red",
+          "rules": [
+            {
+              "id": "readme-clickfix",
+              "sev": "high"
+            }
+          ]
+        },
+        {
+          "name": "i3-empty-organization",
+          "note": "a company organization with no public members",
+          "verdict": "yellow",
+          "rules": [
+            {
+              "id": "empty-org",
+              "sev": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evasions": [
+    {
+      "name": "g17-workflow-remote-script",
+      "note": "a CI workflow pipes a script from an unknown host into a shell; it runs on the CI provider's machines, so it is reported as a note, not a caution",
+      "verdict": "green",
+      "rules": [
+        {
+          "id": "workflow-remote-script",
+          "sev": "low"
+        }
+      ]
+    },
+    {
+      "name": "z1-runtime-staging",
+      "note": "clean loader; payload only ever arrives from a normal-looking API at run time",
+      "verdict": "green",
+      "rules": []
+    },
+    {
+      "name": "z2-clean-registry-dep",
+      "note": "malice would live in a dependency that resolves cleanly from the registry",
+      "verdict": "green",
+      "rules": []
+    },
+    {
+      "name": "z3-social-only",
+      "note": "no malicious code committed; the attack is an instruction delivered elsewhere",
+      "verdict": "green",
+      "rules": []
+    },
+    {
+      "name": "z5-uncorroborated-lookalike",
+      "note": "a one-edit lookalike in an established repository with no other signal stays informational",
+      "verdict": "green",
+      "rules": [
+        {
+          "id": "typosquat-dependency",
+          "sev": "low"
+        }
+      ]
+    },
+    {
+      "name": "z4-slopsquat-hallucinated-name",
+      "note": "a plausible but non-existent package name an LLM might hallucinate and an attacker register",
+      "verdict": "green",
+      "rules": []
+    }
+  ]
+}

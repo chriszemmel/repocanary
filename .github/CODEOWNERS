@@ -1,0 +1,10 @@
+# The files where a mistake ships to everyone: what runs in CI, what the
+# action does on a consumer's runner, and what goes in the package.
+/.github/workflows/  @chriszemmel
+/.github/CODEOWNERS  @chriszemmel
+/.github/dependabot.yml  @chriszemmel
+/action.yml          @chriszemmel
+/cli.js              @chriszemmel
+/src/                @chriszemmel
+/package.json        @chriszemmel
+/package-lock.json   @chriszemmel

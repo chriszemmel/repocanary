@@ -1,0 +1,7 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "pyproject-custom-backend",
+    "pyproject-backend-path"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "packageManager": "yarn@4.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "resolutions": {
+    "typescript@^5.3.3": "patch:typescript@npm%3A5.3.3#./.yarn/patches/typescript-npm-5.3.3-b5f1a4e6f4.patch"
+  }
+}

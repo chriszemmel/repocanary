@@ -1,0 +1,59 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RepoCanary",
+          "informationUri": "https://github.com/chriszemmel/repocanary",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "lifecycle-script",
+              "shortDescription": {
+                "text": "lifecycle-script"
+              },
+              "fullDescription": {
+                "text": "This package runs a \"postinstall\" script automatically the moment anyone types npm install, and that script downloads, decodes, or evaluates code from outside the visible project. That is the exact mechanism fake-interview malware uses to steal credentials before you ever open the code."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            }
+          ]
+        }
+      },
+      "properties": {
+        "verdict": "red",
+        "repository": "acme/widget",
+        "ref": "main"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "lifecycle-script",
+          "level": "error",
+          "message": {
+            "text": "This package runs a \"postinstall\" script automatically the moment anyone types npm install, and that script downloads, decodes, or evaluates code from outside the visible project. That is the exact mechanism fake-interview malware uses to steal credentials before you ever open the code. What to do: Do not run npm install. Report the repository if the script fetches or decodes anything."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package.json"
+                },
+                "region": {
+                  "startLine": 5
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

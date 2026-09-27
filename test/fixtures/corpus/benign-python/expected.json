@@ -1,0 +1,10 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "setup-py-custom-command"
+  ],
+  "mustNotFire": [
+    "setup-py-install-exec",
+    "pyproject-custom-backend"
+  ]
+}

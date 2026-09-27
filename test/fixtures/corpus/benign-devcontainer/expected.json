@@ -1,0 +1,7 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "devcontainer-dangerous-hook",
+    "devcontainer-initialize-command"
+  ]
+}

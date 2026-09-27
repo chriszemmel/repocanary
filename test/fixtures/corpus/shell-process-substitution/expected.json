@@ -1,0 +1,7 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "download-and-execute",
+    "lifecycle-script"
+  ]
+}

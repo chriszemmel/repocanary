@@ -1,0 +1,69 @@
+{
+  "name": "repocanary",
+  "version": "1.0.0",
+  "description": "Checks a GitHub repository for the known signatures of fake-job-interview malware, without ever running its code.",
+  "keywords": [
+    "security",
+    "supply-chain",
+    "malware",
+    "scanner",
+    "npm",
+    "postinstall",
+    "job-scam"
+  ],
+  "license": "MIT",
+  "author": "Chris Zemmel <chris@zyric.de> (https://zyric.de)",
+  "homepage": "https://repocanary.com",
+  "funding": {
+    "type": "individual",
+    "url": "https://nimimo.com/@chris"
+  },
+  "bugs": {
+    "url": "https://github.com/chriszemmel/repocanary/issues"
+  },
+  "type": "module",
+  "bin": {
+    "repocanary": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "src/",
+    "README.md",
+    "THREAT-MODEL.md",
+    "THREAT-COVERAGE.md",
+    "BENCHMARK.md",
+    "WHAT-TO-DO-NOW.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:web": "node --test web/lib/*.test.ts",
+    "coverage": "node --test --experimental-test-coverage test/*.test.js",
+    "lint": "node scripts/lint.js",
+    "build:web": "npm run build --workspace web",
+    "start:web": "npm run start --workspace web",
+    "benchmark": "node scripts/benchmark.js",
+    "threat-coverage": "node scripts/coverage.js",
+    "corpus": "node scripts/corpus.js",
+    "corpus:check": "node scripts/corpus.js --check",
+    "guard": "node scripts/guard.js",
+    "guard:offline": "node scripts/guard.js --offline",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chriszemmel/repocanary.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

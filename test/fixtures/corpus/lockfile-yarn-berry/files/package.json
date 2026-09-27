@@ -1,0 +1,9 @@
+{
+  "name": "analytics-task",
+  "version": "1.0.0",
+  "packageManager": "yarn@4.1.0",
+  "dependencies": {
+    "react": "^18.2.0",
+    "date-utils": "^2.0.0"
+  }
+}

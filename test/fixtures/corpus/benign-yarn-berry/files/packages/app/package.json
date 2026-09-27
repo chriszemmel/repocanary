@@ -1,0 +1,8 @@
+{
+  "name": "@monorepo/app",
+  "version": "1.0.0",
+  "dependencies": {
+    "@monorepo/lib": "workspace:^",
+    "react": "^18.2.0"
+  }
+}

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="614" viewBox="0 0 400 614" role="img" aria-labelledby="t d" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">How a scan works</title>
+<desc id="d">Seven steps: read the tree over the GitHub API; select up to 150 files ranked by what runs first; fetch them as text, 1 MB per file and 6 MB total, never executed; follow up to 20 more files the fetched ones say will run; judge every file with every rule, isolated and in linear time; score one deterministic verdict, which an opt-in AI second opinion may clear from yellow but never lowers or produces a red; report it as human text, JSON or SARIF with an exit code from 0 to 3.</desc>
+<text x="16" y="27" font-size="17" font-weight="600" fill="#768390">How a scan works</text>
+<text x="16" y="46" font-size="13" fill="#768390">Nothing is cloned, installed or run</text>
+<rect x="16" y="62" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="89.0" r="13" fill="#f8ba32"/>
+<text x="42" y="94.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">1</text>
+<text x="66" y="85" font-size="15" font-weight="600" fill="#768390">Read the tree</text>
+<text x="66" y="104" font-size="13" fill="#768390">GitHub API: metadata, history, file list</text>
+<path d="M42 119 V130" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 126 L42 131 L47 126" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="134" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="161.0" r="13" fill="#f8ba32"/>
+<text x="42" y="166.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">2</text>
+<text x="66" y="157" font-size="15" font-weight="600" fill="#768390">Select</text>
+<text x="66" y="176" font-size="13" fill="#768390">up to 150 files, ranked by what runs first</text>
+<path d="M42 191 V202" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 198 L42 203 L47 198" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="206" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="233.0" r="13" fill="#f8ba32"/>
+<text x="42" y="238.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">3</text>
+<text x="66" y="229" font-size="15" font-weight="600" fill="#768390">Fetch as text</text>
+<text x="66" y="248" font-size="13" fill="#768390">1 MB per file, 6 MB total, never executed</text>
+<path d="M42 263 V274" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 270 L42 275 L47 270" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="278" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="305.0" r="13" fill="#f8ba32"/>
+<text x="42" y="310.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">4</text>
+<text x="66" y="301" font-size="15" font-weight="600" fill="#768390">Follow</text>
+<text x="66" y="320" font-size="13" fill="#768390">+20 files the fetched ones say will run</text>
+<path d="M42 335 V346" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 342 L42 347 L47 342" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="350" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="377.0" r="13" fill="#f8ba32"/>
+<text x="42" y="382.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">5</text>
+<text x="66" y="373" font-size="15" font-weight="600" fill="#768390">Judge</text>
+<text x="66" y="392" font-size="13" fill="#768390">every rule on every file, isolated, linear</text>
+<path d="M42 407 V418" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 414 L42 419 L47 414" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="422" width="368" height="104" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="449.0" r="13" fill="#f8ba32"/>
+<text x="42" y="454.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">6</text>
+<text x="66" y="445" font-size="15" font-weight="600" fill="#768390">Score</text>
+<text x="66" y="464" font-size="13" fill="#768390">one deterministic verdict</text>
+<circle cx="326" cy="449.0" r="7" fill="#0ca30c"/>
+<circle cx="346" cy="449.0" r="7" fill="#fab219"/>
+<circle cx="366" cy="449.0" r="7" fill="#d03b3b"/>
+<path d="M66 478 H368" stroke="#768390" stroke-opacity="0.45" stroke-dasharray="4 4"/>
+<text x="66" y="497" font-size="12.5" font-style="italic" fill="#768390">Opt-in AI second opinion: may clear a</text>
+<text x="66" y="514" font-size="12.5" font-style="italic" fill="#768390">yellow, never lowers or produces a red</text>
+<path d="M42 529 V540" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<path d="M37 536 L42 541 L47 536" fill="none" stroke="#768390" stroke-opacity="0.7" stroke-width="1.5"/>
+<rect x="16" y="544" width="368" height="54" rx="8" fill="#768390" fill-opacity="0.08" stroke="#768390" stroke-opacity="0.45"/>
+<circle cx="42" cy="571.0" r="13" fill="#f8ba32"/>
+<text x="42" y="576.0" font-size="14" font-weight="700" fill="#0d1117" text-anchor="middle">7</text>
+<text x="66" y="567" font-size="15" font-weight="600" fill="#768390">Report</text>
+<text x="66" y="586" font-size="13" fill="#768390">human, JSON or SARIF, exit code 0 to 3</text>
+</svg>

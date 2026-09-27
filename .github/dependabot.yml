@@ -1,0 +1,22 @@
+# Actions are pinned to commit SHAs, which freezes what runs but also freezes
+# what gets fixed. This is the other half of that trade: a pinned action that
+# falls behind shows up as a pull request rather than as nothing at all.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+
+  # The scanner itself has no runtime dependencies; this covers the website's
+  # build-time tree, which is where advisories actually land.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      web-build:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]

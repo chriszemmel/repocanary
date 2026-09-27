@@ -1,0 +1,26 @@
+# Editor, tooling and build output. The second group is root-anchored: those
+# names also occur inside test/fixtures and web/app as source.
+node_modules/
+.next/
+*.tsbuildinfo
+*.log
+*.tgz
+
+/out/
+/coverage/
+/.vercel/
+/.idea/
+/.vscode/
+
+.env
+.env.local
+.env*.local
+.env.production
+
+.DS_Store
+Thumbs.db
+*.swp
+
+# The corpus runner writes its results here; they carry a date, not a promise.
+scripts/corpus/last-run.tsv
+scripts/corpus/.running

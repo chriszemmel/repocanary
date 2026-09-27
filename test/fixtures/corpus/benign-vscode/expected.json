@@ -1,0 +1,8 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "vscode-autorun-task",
+    "vscode-tool-path-hijack",
+    "vscode-terminal-env"
+  ]
+}

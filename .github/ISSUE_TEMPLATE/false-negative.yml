@@ -1,0 +1,29 @@
+name: Detection gap (something malicious came back green or yellow)
+description: A repository or technique RepoCanary should have caught. Do not paste a working payload; describe the technique or link to a public write-up.
+labels: ["detection gap"]
+body:
+  - type: textarea
+    id: technique
+    attributes:
+      label: The technique
+      description: What the repository does and where the payload lives (install hook, config file, lockfile, workflow, and so on). A link to a public advisory or write-up is ideal.
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL, if it is still up
+      placeholder: https://github.com/owner/repo
+  - type: textarea
+    id: report
+    attributes:
+      label: What RepoCanary reported
+      description: The verdict and any findings. `--json` output is fine.
+      render: text
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: This report contains no live payload, real endpoint, or real credential.
+          required: true

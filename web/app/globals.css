@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/*
+ * The site is dark, always, in the palette of the wordmark: near-black
+ * tiles and canary yellow. The dark: variants in the components are the
+ * design; the class on <html> switches them on for everyone.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-slate-950: #0c0c0d;
+  --color-slate-900: #141416;
+  --color-slate-800: #1e1e22;
+  --color-slate-700: #2b2b31;
+  --color-blue-950: #2e2305;
+  --color-blue-900: #4a3908;
+  --color-blue-700: #d9a223;
+  --color-blue-600: #f8ba32;
+  --color-blue-500: #f8ba32;
+  --color-blue-400: #ffcf5a;
+  --color-blue-300: #ffdc80;
+  --color-blue-50: #fff6dd;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  @apply antialiased;
+}
+
+/* Brand-tinted text selection. */
+::selection {
+  background-color: color-mix(in srgb, #f8ba32 30%, transparent);
+}
+
+/* A consistent, visible keyboard-focus ring for interactive elements. */
+:where(a, button, input, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid #f8ba32;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,63 @@
+RepoCanary scan: acme/widget (ref: main)
+
+Verdict: YELLOW
+
+Caution: acme/widget has suspicious signals. Do not run it until they are
+explained.
+
+  Yellow means suspicious signals accumulated without a definitive signature.
+  Someone experienced should review the findings below before anyone runs this
+  code.
+
+Scanned 2 files (0 KB). Findings: 0 high, 1 medium, 3 low.
+
+Findings
+
+  1. [MEDIUM] new-account
+     (repository)
+     > Account created 17 days ago
+     Why it matters: The GitHub account that owns this repo is brand new. Scam
+     accounts are created fresh and thrown away after being reported.
+     What to do: Check the account's other activity and whether the company it
+     claims to represent actually exists.
+
+  2. [LOW] author-mismatch
+     (repository)
+     > Commits by: Dev One
+     Why it matters: The names on the commits do not match the account that
+     owns the repo, consistent with code that was copied or planted rather
+     than written here.
+     What to do: Check who actually wrote this code and why it lives under
+     this account.
+
+  3. [LOW] lure-theme
+     (repository)
+     > crypto trading platform demo task
+     Why it matters: The repo is themed around crypto, DeFi, AI, or fintech,
+     the favorite lure topics of fake-interview scams. Not damning alone, but
+     it raises the bar for the other signals.
+     What to do: Apply extra suspicion to everything else about this repo and
+     the person who sent it.
+
+  4. [LOW] single-repo-account
+     (repository)
+     > Owner has 1 public repo(s)
+     Why it matters: The owner has almost no other public work. Real companies
+     and developers usually have a footprint.
+     What to do: Search for the company or person elsewhere and see if this
+     account matches.
+
+What to do next
+  - Do not run this repository until the findings below are explained by
+    someone you trust.
+  - Ask the sender why a take-home task needs the flagged behavior; a
+    legitimate one rarely does.
+  - If anything about how you got this repo feels off (urgency, unsolicited
+    contact, unverifiable company), treat it as a scam.
+
+A green verdict means nothing known matched: none of RepoCanary's known attack
+signatures fired. It is not proof the repository is safe.
+RepoCanary never downloads, installs, or executes the repository; it only
+reads files over the GitHub API and matches known patterns.
+
+Exit code: 1 (0 green, 1 yellow, 2 red, 3 scan failed)

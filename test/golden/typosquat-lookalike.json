@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "repocanary",
+    "version": "1.0.0"
+  },
+  "repository": {
+    "owner": "acme",
+    "repo": "widget",
+    "ref": "main"
+  },
+  "verdict": "yellow",
+  "exitCode": 1,
+  "verdictMeaning": "Yellow means suspicious signals accumulated without a definitive signature. Someone experienced should review the findings below before anyone runs this code.",
+  "findings": [
+    {
+      "id": "typosquat-dependency",
+      "severity": "medium",
+      "file": "package.json",
+      "line": 9,
+      "snippet": "\"lodasg\": \"^4.17.0\"",
+      "why": "The dependency \"lodasg\" is one keystroke away from the popular package \"lodash\". Attackers publish lookalike names so that a hurried reader sees the name they expect. It could be an unrelated legitimate package, but the resemblance is exactly what typosquatting exploits.",
+      "next": "Look up \"lodasg\" on npmjs.com: check its weekly downloads and publish date before trusting it."
+    },
+    {
+      "id": "lifecycle-script",
+      "severity": "low",
+      "file": "package.json",
+      "line": 5,
+      "snippet": "\"prepare\": \"node scripts/setup.js\"",
+      "why": "This package runs a \"prepare\" script automatically when you type npm install, and also when the package is installed from a git source, before you review or run anything. That is common in legitimate projects (copying files, setting up tooling), but it is also the entry point malware uses.",
+      "next": "Read what the \"prepare\" script actually does (and any file it invokes) before installing."
+    }
+  ],
+  "notes": [],
+  "stats": {
+    "filesScanned": 2,
+    "bytesScanned": 308,
+    "findings": 2,
+    "listed": 2,
+    "severities": {
+      "high": 0,
+      "medium": 1,
+      "low": 1
+    },
+    "treeTruncated": false
+  }
+}

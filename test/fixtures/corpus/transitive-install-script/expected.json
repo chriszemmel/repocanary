@@ -1,0 +1,6 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "transitive-install-script"
+  ]
+}

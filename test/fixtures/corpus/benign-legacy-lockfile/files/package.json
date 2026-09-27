@@ -1,0 +1,13 @@
+{
+  "name": "old-utility",
+  "version": "4.2.0",
+  "description": "A long-lived utility library",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chalk": "^0.4.0",
+    "mocha": "^2.5.3"
+  }
+}

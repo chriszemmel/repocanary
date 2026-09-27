@@ -1,0 +1,107 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # A tag can be pushed at any commit by anyone with write access, and a tag
+    # is not covered by branch protection. The environment is where the
+    # reviewer requirement and the publishing credential live, so publishing
+    # cannot happen unattended.
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write # required for npm provenance
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the ancestry check below needs history
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify the tag is on main
+        # Without this a tag at a branch tip, or at a commit CI never saw,
+        # publishes whatever it points at.
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag $GITHUB_REF_NAME is not an ancestor of main" >&2
+            exit 1
+          fi
+
+      - name: Verify the tag matches package.json
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "Tag $tag does not match package.json version $pkg" >&2
+            exit 1
+          fi
+
+      # The publish gate is the CI gate. It used to be `npm test` alone, which
+      # meant the lint rule enforcing "zero runtime dependencies" never ran
+      # before shipping the artifact that claims it, and neither did the
+      # detection-regression guard.
+      - name: Lint, including the zero-runtime-dependency rule
+        run: npm run lint
+      - name: Test before publishing
+        run: npm test
+      - name: Threat coverage is up to date
+        run: node scripts/coverage.js --check
+      - name: Nothing that was caught before is missed now
+        run: npm run guard:offline
+
+      # Trusted Publishing needs npm 11.5.1 or newer, and Node 22 ships 10.9.x.
+      # Pinned, not @latest: this job can publish, and whatever npm is newest
+      # at the moment of a release would run with that power.
+      # Asserting the version rather than trusting the upgrade is the point:
+      # an older npm does not fail over to OIDC, it asks for a token that is
+      # no longer here, and the error it prints does not say why.
+      - name: Use an npm that can authenticate over OIDC
+        run: |
+          set -euo pipefail
+          npm install -g npm@11.20.0
+          have="$(npm --version)"
+          node -e '
+            const [have, need] = [process.argv[1], "11.5.1"];
+            const part = (v) => v.split(".").map(Number);
+            const [h, n] = [part(have), part(need)];
+            const older = h[0] !== n[0] ? h[0] < n[0]
+              : h[1] !== n[1] ? h[1] < n[1] : h[2] < n[2];
+            if (older) {
+              console.error(`npm ${have} cannot publish over OIDC; ${need} or newer is required.`);
+              process.exit(1);
+            }
+            console.log(`npm ${have} can publish over OIDC.`);
+          ' "$have"
+
+      # No NODE_AUTH_TOKEN, and no --provenance flag.
+      #
+      # The job authenticates with the OIDC identity granted by id-token:write
+      # above, which npm exchanges for a credential that lives for this run
+      # only. A standing token is a credential to steal and to rotate; an OIDC
+      # claim is neither, and there is no longer an NPM_TOKEN secret for a
+      # compromised workflow to read. Provenance is attested automatically
+      # when publishing this way, so the flag would only restate it.
+      #
+      # This requires the package to be configured for it at npmjs.com >
+      # Package > Settings > Trusted Publisher, with:
+      #   organization/user  chriszemmel
+      #   repository         repocanary
+      #   workflow filename  release.yml   (the filename, not the path)
+      #   environment        npm-publish
+      # Until that exists the publish fails with an authentication error,
+      # which is the safe direction: nothing ships unsigned or unattested.
+      - name: Publish to npm over Trusted Publishing
+        run: npm publish --access public

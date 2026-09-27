@@ -1,0 +1,15 @@
+{
+  "name": "platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "overrides": {
+    "minimist": "1.2.8"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build": "npm run build --workspaces"
+  }
+}

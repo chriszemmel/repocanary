@@ -1,0 +1,7 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "broken-package-json",
+    "unparseable-lockfile"
+  ]
+}

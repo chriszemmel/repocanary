@@ -1,0 +1,8 @@
+{
+  "verdict": "green",
+  "mustFire": [],
+  "mustNotFire": [
+    "lifecycle-script",
+    "readme-install-first"
+  ]
+}
