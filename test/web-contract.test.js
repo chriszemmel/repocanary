@@ -8,7 +8,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import * as github from "../src/github.js";
 import * as scan from "../src/scan.js";
@@ -98,7 +98,7 @@ test("the site's build configuration loads without a TypeScript compiler", async
     "a .ts config brings back a compiler resolution the deploy does not need",
   );
 
-  const config = (await import(join(ROOT, "web/next.config.mjs"))).default;
+  const config = (await import(pathToFileURL(join(ROOT, "web/next.config.mjs")).href)).default;
   // And it is still the configuration it claims to be: the headers the site's
   // one security control depends on come from this file.
   const rules = await config.headers();

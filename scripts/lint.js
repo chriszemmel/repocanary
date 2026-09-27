@@ -9,7 +9,7 @@
  */
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -36,7 +36,7 @@ const failures = [];
 const files = walk(ROOT);
 
 for (const file of files) {
-  const rel = relative(ROOT, file);
+  const rel = relative(ROOT, file).split(sep).join("/");
   // mjs and cjs are source like any other. They were absent, so the site's
   // build configuration sat outside both this check and the type checker at
   // the same time, which is the one file where nobody would notice.
