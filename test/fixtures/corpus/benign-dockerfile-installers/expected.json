@@ -1,0 +1,8 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "dockerfile-remote-exec",
+    "download-and-execute",
+    "makefile-remote-exec"
+  ]
+}

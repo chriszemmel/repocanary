@@ -1,0 +1,8 @@
+{
+  "name": "charts-task",
+  "version": "1.0.0",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "chart-helpers": "github:randomdev/chart-helpers#9a1b2c3d4e5f"
+  }
+}

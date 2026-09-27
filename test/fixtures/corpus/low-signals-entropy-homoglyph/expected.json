@@ -1,0 +1,11 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "high-entropy-literal",
+    "homoglyph-identifier"
+  ],
+  "mustNotFire": [
+    "homoglyph-url",
+    "base64-blob"
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RepoCanary",
+          "informationUri": "https://github.com/chriszemmel/repocanary",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "author-mismatch",
+              "shortDescription": {
+                "text": "author-mismatch"
+              },
+              "fullDescription": {
+                "text": "The names on the commits do not match the account that owns the repo, consistent with code that was copied or planted rather than written here."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            },
+            {
+              "id": "lure-theme",
+              "shortDescription": {
+                "text": "lure-theme"
+              },
+              "fullDescription": {
+                "text": "The repo is themed around crypto, DeFi, AI, or fintech, the favorite lure topics of fake-interview scams. Not damning alone, but it raises the bar for the other signals."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            },
+            {
+              "id": "new-account",
+              "shortDescription": {
+                "text": "new-account"
+              },
+              "fullDescription": {
+                "text": "The GitHub account that owns this repo is brand new. Scam accounts are created fresh and thrown away after being reported."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            },
+            {
+              "id": "single-repo-account",
+              "shortDescription": {
+                "text": "single-repo-account"
+              },
+              "fullDescription": {
+                "text": "The owner has almost no other public work. Real companies and developers usually have a footprint."
+              },
+              "helpUri": "https://github.com/chriszemmel/repocanary#what-it-checks"
+            }
+          ]
+        }
+      },
+      "properties": {
+        "verdict": "yellow",
+        "repository": "acme/widget",
+        "ref": "main"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "new-account",
+          "level": "warning",
+          "message": {
+            "text": "The GitHub account that owns this repo is brand new. Scam accounts are created fresh and thrown away after being reported. What to do: Check the account's other activity and whether the company it claims to represent actually exists."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "README.md"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "author-mismatch",
+          "level": "note",
+          "message": {
+            "text": "The names on the commits do not match the account that owns the repo, consistent with code that was copied or planted rather than written here. What to do: Check who actually wrote this code and why it lives under this account."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "README.md"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "lure-theme",
+          "level": "note",
+          "message": {
+            "text": "The repo is themed around crypto, DeFi, AI, or fintech, the favorite lure topics of fake-interview scams. Not damning alone, but it raises the bar for the other signals. What to do: Apply extra suspicion to everything else about this repo and the person who sent it."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "README.md"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "single-repo-account",
+          "level": "note",
+          "message": {
+            "text": "The owner has almost no other public work. Real companies and developers usually have a footprint. What to do: Search for the company or person elsewhere and see if this account matches."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "README.md"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

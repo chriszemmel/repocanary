@@ -1,0 +1,128 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Threat-coverage doc is up to date
+        run: node scripts/coverage.js --check
+      # A project about dependency risk should hear about its own, and a
+      # high advisory fails the build.
+      - name: Dependency advisories
+        run: npm audit --audit-level=high --omit=optional
+      # Most fixes here narrow a rule so a false positive stops firing, and
+      # every one of those can only cost detection. This is the gate for that
+      # direction: the offline half needs no network, so it runs on every push
+      # beside the tests. The half that clones expected-red.txt runs weekly
+      # with the corpus.
+      - name: Nothing that was caught before is missed now
+        run: npm run guard:offline
+      - name: The packed tarball installs and runs from an empty project
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          tarball="$(pwd)/$(npm pack --silent | tail -n 1)"
+          dir="$(mktemp -d)"
+          cd "$dir"
+          npm init -y > /dev/null
+          npm install --silent "$tarball"
+          test "$(npx --no-install repocanary --version)" = "repocanary $version"
+          npx --no-install repocanary --help > /dev/null
+          test ! -e node_modules/repocanary/web
+          test ! -e node_modules/repocanary/test
+          test ! -e node_modules/repocanary/node_modules
+
+  web:
+    # The site imports the shared engine from ../src, so an engine change can
+    # break the page. The front end is TypeScript, which the root suite and
+    # scripts/lint.js do not read, so it is typechecked, unit-tested and
+    # built here. The web unit tests use Node's built-in type stripping,
+    # which is why this job runs on Node 22 only.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit --project web
+      - name: Web unit tests
+        run: npm run test:web
+      - name: Build
+        run: npm run build:web
+
+  scan-self:
+    # End-to-end smoke test over the real GitHub API. It asserts only that a
+    # verdict was reached: this repository scans red, because the rules file
+    # contains every signature it searches for. Exit 3, the scan could not
+    # complete, is the only failing outcome.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Scan this repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ${{ github.repository }}
+          TARGET_REF: ${{ github.sha }}
+        run: |
+          set +e
+          node cli.js "$TARGET_REPO" --ref "$TARGET_REF"
+          code=$?
+          set -e
+          if [ "$code" -eq 3 ]; then
+            echo "::error::The scan could not complete (exit 3)."
+            exit 1
+          fi
+          echo "Scan completed and reached a verdict (exit $code)."
+      - name: Check the JSON report is well formed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ${{ github.repository }}
+          TARGET_REF: ${{ github.sha }}
+        run: |
+          set +e
+          node cli.js "$TARGET_REPO" --ref "$TARGET_REF" --json > report.json
+          code=$?
+          set -e
+          if [ "$code" -eq 3 ]; then
+            echo "::error::The JSON scan could not complete (exit 3)."
+            exit 1
+          fi
+          node -e "
+            const r = JSON.parse(require('fs').readFileSync('report.json', 'utf8'));
+            if (r.schemaVersion !== 1) throw new Error('unexpected schemaVersion');
+            if (!['green','yellow','red'].includes(r.verdict)) throw new Error('bad verdict');
+            console.log('Valid schemaVersion 1 report, verdict ' + r.verdict + ', ' + r.findings.length + ' findings.');
+          "

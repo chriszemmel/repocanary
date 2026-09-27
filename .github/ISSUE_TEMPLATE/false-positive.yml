@@ -1,0 +1,32 @@
+name: False positive (a real project came back red)
+description: RepoCanary called a legitimate repository dangerous. This is a bug and the most useful report you can file.
+labels: ["false positive"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL
+      description: The public repository that scanned red (or the ref, if it only happens on one branch).
+      placeholder: https://github.com/owner/repo
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: The high-severity finding
+      description: Paste the finding block from the report (rule id, file and line, snippet). `--json` output is fine too.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it is benign
+      description: What the flagged code actually does. A link to the line helps.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RepoCanary version
+      placeholder: output of `npx repocanary --version`

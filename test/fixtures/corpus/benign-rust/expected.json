@@ -1,0 +1,6 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "build-rs-network-exec"
+  ]
+}

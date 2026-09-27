@@ -1,0 +1,63 @@
+# The corpus gate: re-scan every repository the project has ever been
+# measured against, against the live repositories rather than a snapshot.
+#
+# This runs weekly rather than per push for two reasons. It clones over a
+# thousand repositories, which is not something to do on every commit. And
+# what it catches is rules ageing: a repository changes upstream, and a rule
+# that was right last month convicts it this month. Two such regressions have
+# already been found this way, and neither could have been by any fixture.
+#
+# Nothing is executed. Each repository is cloned shallowly, read, and deleted,
+# so the runner holds a handful at a time.
+name: corpus
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # The reds a human has already read and confirmed. A fix that narrows a rule
+  # can only lose one of these, never add one, so this is the cheap half of
+  # the corpus and worth running before the thousand clones do.
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Nothing that was caught before is missed now
+        run: npm run guard
+
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      # One shard failing is a finding, not a reason to cancel the rest:
+      # the point of the run is the whole picture.
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Scan shard ${{ matrix.shard }} of 6
+        run: node scripts/corpus.js --check --shard ${{ matrix.shard }}/6 --concurrency 4
+      - name: Keep the results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: corpus-shard-${{ matrix.shard }}
+          path: scripts/corpus/last-run.tsv
+          if-no-files-found: warn

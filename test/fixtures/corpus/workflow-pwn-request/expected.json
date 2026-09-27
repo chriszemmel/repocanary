@@ -1,0 +1,6 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "workflow-pwn-request"
+  ]
+}

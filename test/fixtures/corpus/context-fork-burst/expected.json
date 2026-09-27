@@ -1,0 +1,11 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "repo-is-fork",
+    "commit-burst"
+  ],
+  "mustNotFire": [
+    "new-account",
+    "empty-org"
+  ]
+}

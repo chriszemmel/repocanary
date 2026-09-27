@@ -1,0 +1,9 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "known-malicious-package"
+  ],
+  "mustNotFire": [
+    "typosquat-dependency"
+  ]
+}

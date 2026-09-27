@@ -1,0 +1,7 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "transitive-install-script",
+    "odd-dependency-mix"
+  ]
+}

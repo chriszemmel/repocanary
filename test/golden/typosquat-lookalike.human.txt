@@ -1,0 +1,55 @@
+RepoCanary scan: acme/widget (ref: main)
+
+Verdict: YELLOW
+
+Caution: acme/widget has suspicious signals. Do not run it until they are
+explained.
+
+  Yellow means suspicious signals accumulated without a definitive signature.
+  Someone experienced should review the findings below before anyone runs this
+  code.
+
+Scanned 2 files (0 KB). Findings: 0 high, 1 medium, 1 low.
+
+Findings
+
+  1. [MEDIUM] typosquat-dependency
+     package.json:9
+     > "lodasg": "^4.17.0"
+     Why it matters: The dependency "lodasg" is one keystroke away from the
+     popular package "lodash". Attackers publish lookalike names so that a
+     hurried reader sees the name they expect. It could be an unrelated
+     legitimate package, but the resemblance is exactly what typosquatting
+     exploits.
+     What to do: Look up "lodasg" on npmjs.com: check its weekly downloads and
+     publish date before trusting it.
+
+  2. [LOW] lifecycle-script
+     package.json:5
+     > "prepare": "node scripts/setup.js"
+     Why it matters: This package runs a "prepare" script automatically when
+     you type npm install, and also when the package is installed from a git
+     source, before you review or run anything. That is common in legitimate
+     projects (copying files, setting up tooling), but it is also the entry
+     point malware uses.
+     What to do: Read what the "prepare" script actually does (and any file it
+     invokes) before installing.
+     The script it runs (scripts/setup.js):
+     | const fs = require("fs");
+     | if (!fs.existsSync(".env")) fs.copyFileSync(".env.example", ".env");
+     | 
+
+What to do next
+  - Do not run this repository until the findings below are explained by
+    someone you trust.
+  - Ask the sender why a take-home task needs the flagged behavior; a
+    legitimate one rarely does.
+  - If anything about how you got this repo feels off (urgency, unsolicited
+    contact, unverifiable company), treat it as a scam.
+
+A green verdict means nothing known matched: none of RepoCanary's known attack
+signatures fired. It is not proof the repository is safe.
+RepoCanary never downloads, installs, or executes the repository; it only
+reads files over the GitHub API and matches known patterns.
+
+Exit code: 1 (0 green, 1 yellow, 2 red, 3 scan failed)

@@ -1,0 +1,24 @@
+RepoCanary scan: acme/widget (ref: main)
+
+Verdict: GREEN
+
+No known signatures matched in acme/widget.
+
+  A green verdict means nothing known matched: none of RepoCanary's known
+  attack signatures fired. It is not proof the repository is safe.
+
+Scanned 4 files (1 KB). Findings: 0 high, 0 medium, 0 low.
+
+What to do next
+  - Read the code yourself before running anything; a scan is not a review.
+  - Run unfamiliar projects inside a container or virtual machine, never on
+    the machine that holds your passwords and wallets.
+  - Be suspicious of any interview task that requires installing a stranger's
+    dependencies; ask if you can review without running.
+
+A green verdict means nothing known matched: none of RepoCanary's known attack
+signatures fired. It is not proof the repository is safe.
+RepoCanary never downloads, installs, or executes the repository; it only
+reads files over the GitHub API and matches known patterns.
+
+Exit code: 0 (0 green, 1 yellow, 2 red, 3 scan failed)

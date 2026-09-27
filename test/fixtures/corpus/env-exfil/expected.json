@@ -1,0 +1,7 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "env-dump-exfiltration",
+    "env-exfiltration"
+  ]
+}

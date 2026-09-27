@@ -1,0 +1,7 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "wallet-file-access",
+    "wallet-extension-id"
+  ]
+}

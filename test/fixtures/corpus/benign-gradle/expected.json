@@ -1,0 +1,7 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "gradle-build-exec",
+    "gradle-insecure-repo"
+  ]
+}

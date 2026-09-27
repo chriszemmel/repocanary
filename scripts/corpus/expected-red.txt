@@ -1,0 +1,204 @@
+# Repositories in regression.txt that scan red on purpose, with the reason.
+# Anything red that is not listed here is a regression, and scripts/corpus.js
+# --check fails on it. Adding a line is a decision: it says the finding is
+# correct and the repository earns it.
+#
+# The shape the tool exists to name, done by an honest project.
+dokku/dokku                 root Dockerfile runs an installer fetched from another domain
+giampaolo/psutil            Makefile pipes a third-party installer into a shell
+dotenvx/dotenvx             assigns an installer command to a constant and execSyncs it
+metabase/metabase           Dockerfile downloads the Clojure installer and runs it unverified
+atuinsh/atuin               devcontainer feature pipes its own installer into bash
+getsentry/sentry-javascript lockfile resolves packages through a private mirror
+epicweb-dev/data-modeling   aliases the trusted name "prisma" to an unrelated package
+webpack/webpack-cli         evals a constructed import() to load an ESM config, with its own eslint-disable
+#
+# CI and test infrastructure doing the real thing, in a repository whose
+# other 99% is not that. Read the matched line before adding one of these:
+# these same rules on these same shapes are what convict actual malware, so
+# a line here is a claim that this project genuinely does what it is accused
+# of, checked against the file and not against the project's reputation.
+reactjs/react.dev           builds a function from compiled MDX and calls it at build time, with its own comment saying never to do this with untrusted input
+yt-dlp/yt-dlp               reads the Chrome key store and cookie databases, which is what --cookies-from-browser is
+#
+# The repository is the category. A scanner that finds download-and-execute
+# finds the tools whose purpose is download-and-execute.
+rustdesk/rustdesk           remote desktop software
+yarnpkg/berry               the project that defines yarnPath
+Unitech/pm2                 a process manager whose advertised feature is installing a launch agent or systemd unit
+#
+# Removed on 2026-09-08: ScoopInstaller/Scoop, chocolatey/choco and
+# microsoft/winget-cli. All three were listed here as package managers, and
+# none of them was red for being one. Scoop and Chocolatey matched on the
+# string "-Encoding" inside a comment and a debug message, because the rule
+# looking for PowerShell's -EncodedCommand accepted the first four letters of
+# an unrelated cmdlet parameter. winget-cli matched because its README says
+# "if you get an error about missing framework packages" a few paragraphs
+# above a "## PowerShell Module" heading, and the ClickFix rule took the bare
+# word as the pasted command. Three wrong reds sat behind three lines that
+# said the red was correct, which is the failure this file can cause: an
+# entry here stops anyone asking why. All three scan green now, and that is
+# its own finding -- the rules do not currently catch what these projects
+# actually do, which is download and run installers. See BENCHMARK.md.
+#
+# Left on 2026-09-09, after asking a different question of this list. Every
+# entry above had been checked for "is the matched line real?". None had been
+# checked against what a red actually claims. src/report.js stated it, until
+# 2026-09-09, as "a pattern that is essentially only ever present in malware.
+# Treat this repository as hostile." That sentence was removed the same day
+# for being measurably untrue -- three entries below are red for doing their
+# advertised job -- and an invariant test in test/report.test.js now stops it
+# coming back. The audit below was done against the old, stronger claim.
+#
+# Thirteen entries were one missing idea: the file runs on a build agent, a
+# release runner or a container the project provisions, and never on the
+# machine of the person who cloned the repository -- the only machine this
+# tool is asked about. That idea existed in the code as CI_ONLY_DIR and was
+# consulted in exactly one place, the high gate of download-and-execute, so
+# ssh-backdoor and startup-persistence never asked it; its directory list
+# matched exactly one of the thirty-two paths here. It is now a step-down
+# beside the test-path one, applied to every rule, one step and no more.
+#
+#   invoke-ai/InvokeAI        the entrypoint writes a key the operator supplies
+#                             in PUBLIC_KEY into the container's own
+#                             authorized_keys, not the host's, and only if the
+#                             operator sets it. That is a documented opt-in of
+#                             the product's image, not a backdoor.
+#   dotnet/maui               eng/devices downloads the Windows App SDK runtime
+#                             through aka.ms and installs it, on a device-test
+#                             agent
+#   ponylang/ponyc            .ci-scripts generates a key and writes it to a
+#                             BSD build VM's authorized_keys
+#   projectcalico/calico      .argoci epilogue fetches a script from another
+#                             org at an unpinned branch
+#   scikit-learn/scikit-learn build_tools/circle downloads the Miniforge
+#                             installer and runs it
+#
+# The other eight stay, and the reason is worth stating rather than hiding:
+# they sit in scripts/, tools/, hack/, misc/ and playground/, names that
+# guarantee nothing. A dropper a README tells you to run lives in scripts/
+# too. truffle, cal.com, cypress, grpc, materialize, beam, airflow and
+# minikube are red because their path cannot tell this tool otherwise, not
+# because anyone believes those projects are hostile. That is a known limit
+# of a path-based rule, recorded here instead of being tuned away with a
+# directory list that would also exempt the thing this tool exists to catch.
+#
+# Two reason lines were also wrong, which is the failure this file can cause
+# and the same tell that exposed Scoop, choco and winget-cli. apache/flink
+# was listed for an e2e script installing a systemd unit; the file that
+# actually fires is docs/static/downloads/setup-pyflink-virtual-env.sh, a
+# script the docs site serves for users to download and run, which fetches
+# the uv installer from a pinned GitHub release. dotnet/maui was listed for
+# eng/common/internal-feed-operations.sh; the file that fired was
+# eng/devices/run-windows-devicetests.cmd.
+#
+# Both then moved out of the "CI and test infrastructure" group, because
+# neither is that. flink's script is served from the project's docs site for
+# users to download and run; the aws-cdk one is sample infrastructure a user
+# deploys to their own EC2 instance. They keep their reds on the merits, and
+# they are two of the fifteen entries that had looked like CI-only files
+# before anyone read them -- which leaves thirteen that were.
+
+# Wave 15. The first is the only repository in the corpus that is malicious
+# rather than honest: it is kept so that the detection that found it is
+# checked weekly, and a "gone" for it is GitHub taking it down.
+maliawan0/instagram-clone-mern  obfuscator.io payload appended to a route file and hidden in a .woff2, run by a folderOpen task
+
+# Removed 2026-09-16, upstream drift rather than a rule change: cypress-io/cypress
+# no longer pipes its Windows code-signing download into a shell at high (the
+# curl now saves to a file and the exec is not adjacent, a caution), and
+# thirdweb-dev/js changed the lockfile entry that resolved off the registry.
+# Both were read on the day and neither does the thing any more; a fork or a
+# revert would make them red again and earn a fresh line.
+
+# Wave 16, 2026-09-24. The first is malicious, like wave 15's: kept so the
+# three rules that each catch it are checked weekly.
+HZCX404/memecoin-trading-bots   obfuscated loader hidden after 382 spaces, run by npm start, beside a package npm pulled as malware
+Pi-Defi-world/acbu-smart-contract  build.rs runs a fetch script on every cargo build
+fschmutz/claude-usage-panel     installs a LaunchAgent and a systemd timer, which is its advertised job
+baekenough/oh-my-customcode     rtk installer execs a raw.githubusercontent.com script piped into sh
+HigherOrderCO/Bend              `bend update` spawns sh -c on its own install.sh piped from curl (upstream change of 2026-09-24)
+
+# Also removed 2026-09-24: browser-use, symaira-vault and nyshporka, read again
+# under the rules that followed (a profile list read from Local State, a help
+# text naming a LaunchAgent path, a command string built for a remote VM).
+#
+# Removed 2026-09-24, a rule change: seventeen reds that were a program a
+# maintainer runs by hand, in tools/, scripts/, deploy/, a docs download, CI
+# worker init, EC2 user data, and nothing in the repository starts it or
+# tells anyone to run it: PowerShell, truffle, flink, aws-cdk-examples,
+# airflow, beam, cal.com, grpc, materialize, ultralytics, monoplan,
+# canton-network/wallet, claude-trading-bot-v1, gerowallet and
+# FMT-exocortex-template. Each is now a caution that says so. Two more,
+# marm-memory and tandry, were wrong reds and are fixed: an install hook
+# that only tidies the project's own files, and an MCP config pointed at
+# build output that is not in the repository.
+
+# Waves 17-23, 2026-09-24: 691 repositories drawn fresh and scanned on frozen
+# rules. Three are malicious and kept so the rules that caught them are
+# checked weekly; a "gone" for any of them is GitHub taking it down.
+ViditGalav/ImapctBridge-Linking-Defi-Sustainability-  BeaverTail: global['!'] loader hidden after spaces at the end of tailwind.config.js
+kaileycompact51/HyperLiquid-Claw     a trading bot whose bin and install scripts are obfuscator.io output
+muhammadalicusit43-coder/octanet-landing-page-starter  an XOR-encrypted page that document.writes a fake "secure download" for a zip
+# Honest projects doing the thing.
+EverMind-AI/Raven                    root beta.sh downloads its installer and runs it
+SuperagenticAI/superqode             install.sh pipes the uv installer, fetched by variable, into sh
+novuhq/novu                          lockfile resolves bullmq-pro from the vendor's private registry
+synthetic-sciences/openscience       the launcher offers to pipe its installer into bash and runs it on yes
+juspay/hyperswitch                   docker-compose.yml pipes diesel's and just's installers into bash
+blogminhquy/javis-os                 autostart script installs a LaunchAgent; install.sh pipes installers into sh
+Agent360dk/browser-mcp               updater reads Secure Preferences from every Chrome, Edge and Arc profile
+jamiegreen294-boop/dexters-loyalty-android  web/app.js gunzips base64 and evals it; the payload is the app itself
+GuyMannDude/mnemo-cortex             robot-install.sh installs a nightly cron job
+alicetin1905-ux/TradeBot             setup-mac.sh installs cron jobs
+BeyondTheProtocol/polaris            tools install and load launchd daemons
+# Wrong and still open. Listed so the weekly gate is not red on a known
+# fault; BENCHMARK.md counts each of these as wrong.
+ndouglas-edera/ctf-challenge-1       WRONG: a CTF's simulated shell prints ~/.kube/config inside fake env output
+openchamber/openchamber              WRONG: an SSH GUI's askpass dialog has the shape of a macOS password phish
+raojiacui/prompt-lens                WRONG: eval of ffprobe's frame-rate fraction sits near a fetch
+MarinaVeauvy/trading-cron            WRONG: a cron workflow authenticates to its own Vercel endpoint with a secret in the URL
+
+# Waves 24-27, 2026-09-24, the third frozen series. One developer account,
+# thirteen repositories, all infected: a `global.o=` loader behind a wall of
+# spaces in vite.config.js, postcss.config.js or server.js. Kept, like the
+# others above, so the rule that found them is checked weekly.
+yashkashyap-jett/randomPasswordReact              infected: global.o= loader hidden after spaces
+yashkashyap-jett/spotifyBackend                   infected: global.o= loader hidden after spaces
+yashkashyap-jett/jobFinder_Backend                infected: global.o= loader hidden after spaces
+yashkashyap-jett/currency-converter-react         infected: global.o= loader hidden after spaces
+yashkashyap-jett/lld-practice-platform            infected: global.o= loader hidden after spaces
+yashkashyap-jett/blockchainStudent                infected: global.o= loader hidden after spaces
+yashkashyap-jett/KinetiqAI                        infected: global.o= loader hidden after spaces
+yashkashyap-jett/healthcare-digital-twin          infected: global.o= loader hidden after spaces
+yashkashyap-jett/blockchainVoting                 infected: global.o= loader hidden after spaces
+yashkashyap-jett/backendCompleteAuthentication    infected: global.o= loader hidden after spaces
+yashkashyap-jett/HospitalManagemenetSystem        infected: global.o= loader hidden after spaces
+yashkashyap-jett/bankingLedger                    infected: global.o= loader hidden after spaces
+yashkashyap-jett/FullStack_JobFinder              infected: global.o= loader hidden after spaces
+# Honest projects doing the thing.
+mrpulor-gh/nuphus                    src-tauri/build.rs downloads with curl on every cargo build
+nowledge-co/con-terminal             crates/con-ghostty/build.rs downloads with curl on every cargo build
+paoloronco/OrbitPage                 root installers pipe its own installer into bash inside a Proxmox container
+Augustas11/macprovider               install.sh installs and loads LaunchAgents
+ROCm/spur                            reads ~/.docker/config.json for registry credentials, as an OCI client does
+tjcoder-labs/cli                     postinstall downloads its native binary and marks it executable
+
+# Wave 28, 2026-09-24, the fourth frozen series.
+bogdanstancu1119-maker/Oglinzi-PSIE  execs whatever a URL returns (exec(requests.get(url).text))
+knowledgepixels/nanodash             stress test turns a registry listing into commands and pipes them into bash
+dreamprogrammin/commerce             install script writes and loads a LaunchAgent
+sebastianwien/ev-monitor             deploy.sh installs a root cron job
+GustAlvesG/Lara                      deploy_hml.sh installs the Laravel scheduler's cron job
+deforay/intelis                      remote-backup.sh downloads, schedules itself and sets up SSH keys
+Cloverbandit1/fett-desk-win          installer registers itself to start at login
+
+# Wave 29, 2026-09-24, the fifth frozen series.
+davodrakhshani-creator/quantbot-web  execs zlib-compressed base64 (a backtest when decoded, hidden all the same)
+olimc2016/dsh-token-meter-panel      copies every Chromium profile's Local Storage and reads site login tokens
+vimagick/dockerfiles                 alpine-arm Makefile downloads docker's master mkimage script and runs it
+# Wrong and still open.
+NarithChesda/GoEvent-Frontend        WRONG: an agent hook runs a local checker through node -e and spawnSync
+poisdahl/meal-concierge              WRONG: Chrome DevTools Runtime.evaluate of a page script reads as remote code
+tsallabi/Dlal                        WRONG: a smoke test logs in to its own deployment with a secret
+fabiocguerreiro/HiveFW               WRONG: a bundled Lit web component is not recognised as bundler output

@@ -1,0 +1,10 @@
+{
+  "name": "types-task",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@typs/node": "^20.4.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

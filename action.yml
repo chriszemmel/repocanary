@@ -1,0 +1,124 @@
+name: RepoCanary
+description: Scan a GitHub repository for known fake-interview malware signatures without running its code.
+branding:
+  icon: eye
+  color: yellow
+
+inputs:
+  repository:
+    description: The owner/repo to scan. Defaults to the repository running the action.
+    required: false
+    default: ${{ github.repository }}
+  ref:
+    description: >-
+      Branch, tag, or commit to scan. Defaults to the triggering commit when
+      scanning the repository running the action, and to the default branch
+      of any other repository.
+    required: false
+    default: ""
+  fail-on:
+    description: >-
+      Exit non-zero when the verdict is this severity or worse: red, yellow, or
+      never. A scan that could not complete fails the step under all three.
+    required: false
+    default: red
+  sarif-file:
+    description: If set, write a SARIF report to this path for upload to code scanning.
+    required: false
+    default: ""
+  github-token:
+    description: Token used for GitHub API requests, to raise the rate limit.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  verdict:
+    description: >-
+      The scan verdict: green, yellow, red, or error when the scan could not
+      complete. An error also fails the step, whatever fail-on is set to.
+    value: ${{ steps.scan.outputs.verdict }}
+
+runs:
+  using: composite
+  steps:
+    - id: scan
+      shell: bash
+      # Inputs arrive as environment variables, never interpolated into the
+      # script text, so a value cannot break out of it.
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        RC_ACTION_PATH: ${{ github.action_path }}
+        RC_REPOSITORY: ${{ inputs.repository }}
+        RC_REF: ${{ inputs.ref }}
+        RC_CURRENT_REPOSITORY: ${{ github.repository }}
+        RC_CURRENT_SHA: ${{ github.sha }}
+        RC_FAIL_ON: ${{ inputs.fail-on }}
+        RC_SARIF_FILE: ${{ inputs.sarif-file }}
+      run: |
+        set -euo pipefail
+
+        case "$RC_FAIL_ON" in
+          red|yellow|never) ;;
+          *)
+            echo "fail-on must be red, yellow or never (got: $RC_FAIL_ON)" >&2
+            exit 1
+            ;;
+        esac
+
+        cli="$RC_ACTION_PATH/cli.js"
+        # The triggering commit exists only in the repository that triggered
+        # the run. Asking another repository for it is a 404 on every scan.
+        ref="$RC_REF"
+        if [ -z "$ref" ] && [ "$RC_REPOSITORY" = "$RC_CURRENT_REPOSITORY" ]; then
+          ref="$RC_CURRENT_SHA"
+        fi
+        args=("$RC_REPOSITORY")
+        if [ -n "$ref" ]; then
+          args+=(--ref "$ref")
+        fi
+
+        # A non-zero exit here is the verdict, not a failure, so it must not
+        # abort the step before the fail-on decision below.
+        set +e
+        json="$(node "$cli" "${args[@]}" --json)"
+        code=$?
+        set -e
+        echo "$json"
+
+        verdict="$(node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).verdict)}catch{console.log("error")}})' <<<"$json")"
+        case "$verdict" in
+          green|yellow|red) ;;
+          *) verdict=error ;;
+        esac
+        echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+
+        # Anything that is not one of the four documented verdicts is a scan
+        # that did not run, whatever exit code it left behind. It fails under
+        # every fail-on setting.
+        case "$verdict" in
+          green|yellow|red) ;;
+          *) exit 3 ;;
+        esac
+        if [ "$code" -ge 3 ]; then
+          exit 3
+        fi
+
+        if [ -n "$RC_SARIF_FILE" ]; then
+          tmp_sarif="$(mktemp)"
+          set +e
+          node "$cli" "${args[@]}" --sarif > "$tmp_sarif"
+          sarif_code=$?
+          set -e
+          if [ "$sarif_code" -ge 3 ] || [ ! -s "$tmp_sarif" ]; then
+            rm -f "$tmp_sarif"
+            echo "The SARIF report could not be produced." >&2
+            exit 3
+          fi
+          mv "$tmp_sarif" "$RC_SARIF_FILE"
+        fi
+
+        case "$RC_FAIL_ON" in
+          never)  exit 0 ;;
+          yellow) exit "$code" ;;
+          red)    [ "$code" -eq 2 ] && exit 2 || exit 0 ;;
+        esac

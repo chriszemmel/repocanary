@@ -1,0 +1,17 @@
+{
+  "name": "dashboard",
+  "version": "0.4.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "esbuild": "^0.19.0"
+  }
+}

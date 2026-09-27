@@ -1,0 +1,6 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "requirements-url-dependency"
+  ]
+}

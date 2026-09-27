@@ -1,0 +1,1 @@
+{ "name": "docs-catalog", "private": true, "scripts": { "dev": "vite" }, "dependencies": { "react": "^18.0.0" } }

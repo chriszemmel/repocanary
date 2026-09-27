@@ -1,0 +1,10 @@
+{
+  "verdict": "red",
+  "mustFire": [
+    "lockfile-git-dependency",
+    "lockfile-manifest-mismatch"
+  ],
+  "mustNotFire": [
+    "lockfile-off-registry"
+  ]
+}

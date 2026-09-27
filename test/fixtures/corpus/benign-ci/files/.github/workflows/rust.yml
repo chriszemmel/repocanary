@@ -1,0 +1,9 @@
+name: rust
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: cargo test

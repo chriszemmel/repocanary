@@ -1,0 +1,7 @@
+{
+  "name": "git-dep-task",
+  "version": "1.0.0",
+  "dependencies": {
+    "leftish-pad": "^1.0.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "verdict": "green",
+  "mustFire": [
+    "typosquat-dependency"
+  ],
+  "mustNotFire": [
+    "known-malicious-package",
+    "lifecycle-script"
+  ]
+}

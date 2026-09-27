@@ -1,0 +1,6 @@
+{
+  "verdict": "yellow",
+  "mustFire": [
+    "scope-confusion"
+  ]
+}

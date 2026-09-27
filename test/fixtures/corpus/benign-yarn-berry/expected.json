@@ -1,0 +1,8 @@
+{
+  "verdict": "green",
+  "mustNotFire": [
+    "lockfile-off-registry",
+    "lockfile-git-dependency",
+    "yarnrc-yarnpath-hijack"
+  ]
+}

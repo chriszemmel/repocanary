@@ -1,0 +1,8 @@
+{
+  "name": "@ws/ui",
+  "version": "0.1.0",
+  "dependencies": {
+    "@ws/core": "workspace:*",
+    "react": "^18.2.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "repocanary",
+    "version": "1.0.0"
+  },
+  "repository": {
+    "owner": "acme",
+    "repo": "widget",
+    "ref": "main"
+  },
+  "verdict": "green",
+  "exitCode": 0,
+  "verdictMeaning": "A green verdict means nothing known matched: none of RepoCanary's known attack signatures fired. It is not proof the repository is safe.",
+  "findings": [],
+  "notes": [],
+  "stats": {
+    "filesScanned": 4,
+    "bytesScanned": 986,
+    "findings": 0,
+    "listed": 0,
+    "severities": {
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    },
+    "treeTruncated": false
+  }
+}

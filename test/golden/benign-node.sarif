@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RepoCanary",
+          "informationUri": "https://github.com/chriszemmel/repocanary",
+          "version": "1.0.0",
+          "rules": []
+        }
+      },
+      "properties": {
+        "verdict": "green",
+        "repository": "acme/widget",
+        "ref": "main"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ],
+      "results": []
+    }
+  ]
+}
