@@ -202,7 +202,7 @@ export function renderHuman(result) {
   out.push(wrapText(GREEN_SENTENCE, 78, ""));
   out.push(
     wrapText(
-      "RepoCanary never downloads, installs, or executes the repository; it only reads files over the GitHub API and matches known patterns.",
+      "RepoCanary never installs, runs, or saves anything from the repository; it only reads files over the GitHub API and matches known patterns.",
       78,
       "",
     ),

@@ -38,7 +38,7 @@ What to do next
 
 A green verdict means nothing known matched: none of RepoCanary's known attack
 signatures fired. It is not proof the repository is safe.
-RepoCanary never downloads, installs, or executes the repository; it only
-reads files over the GitHub API and matches known patterns.
+RepoCanary never installs, runs, or saves anything from the repository; it
+only reads files over the GitHub API and matches known patterns.
 
 Exit code: 2 (0 green, 1 yellow, 2 red, 3 scan failed)

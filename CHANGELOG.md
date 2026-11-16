@@ -8,6 +8,12 @@ it.
 
 ## [Unreleased]
 
+### Fixed
+
+- The footer of the human-readable report still said RepoCanary "never downloads" the
+  repository, the wording 1.0.1 corrected everywhere else. It now says it never installs, runs or
+  saves anything from the repository; the golden report files follow.
+
 ## [1.0.1] - 2026-09-27
 
 ### Fixed
